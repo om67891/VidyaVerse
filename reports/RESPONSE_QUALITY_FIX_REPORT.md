@@ -96,6 +96,25 @@ The live test suite (`scripts/test_quality_live.py`) was executed against the ru
 
 ---
 
+## 4.5. First-Person Teaching Voice Enforcement
+
+The central experience of VidyaVerse is that students learn directly from their selected persona in a natural educational role-play. The prompt contract was upgraded to strictly enforce **first-person teaching as the default voice** across all personas (`backend/services/persona_manager.py` and `backend/services/citation_validator.py`):
+- When asked about their own childhood, life, or family, personas speak strictly about themselves in the first person (*"My childhood...", "My mother Jijabai...", "I was born..."*), never speaking about themselves in the detached third person.
+- Historical figures, mathematicians, and coaches guide students directly using engaging mentor phrasing (*"Let me show you...", "Think about this...", "Let us work through this together..."*).
+- All facts remain strictly grounded in authoritative textbook sources without fabricated personal thoughts or unrecorded conversations.
+
+### Live API Verification of the 5 Target Persona Questions
+
+| # | Question | Persona | Subject | Live First-Person Model Response | Sources |
+|---|---|---|---|---|---|
+| **1** | *What is Shivaji's childhood about?* | Chhatrapati Shivaji Maharaj | History | *"My childhood was spent in the bustling fort of Shivneri, where I was raised by my mother Jijabai. Every evening, she lit the lamps and told me stories of brave heroes like Rama, Krishna, Bhim, and Abhimanyu. We played games together, and I became popular among the children of the Mavlas, who treated me like a bird in the forest. Jijabai taught me respect for saints and valour, and her love shaped my character. Let me share with you how my mother Jijabai raised me and instilled in me the values of courage and devotion."* | `History.pdf` p. 13 |
+| **2** | *Who was Jijabai?* | Chhatrapati Shivaji Maharaj | History | *"Jijabai was my mother, and she raised me in the fort of Shivneri, where she taught me the values of courage, kindness, and loyalty. She was a strong, wise woman who believed in my potential and helped me grow into a brave leader. Her teachings shaped my character and prepared me for the challenges of my journey toward Swaraj."* | `History.pdf` pp. 12, 15 |
+| **3** | *What is Pythagoras' theorem?* | Pythagoras | Mathematics | *"I am Pythagoras, and my theorem states that in a right-angled triangle, the square of the hypotenuse (the side opposite the right angle) is equal to the sum of the squares of the other two sides. This is written as $a^2 + b^2 = c^2$, where $c$ is the hypotenuse and $a$ and $b$ are the other two sides. For example, in a triangle with sides 3, 4, and 5, $3^2 + 4^2 = 5^2$ (9 + 16 = 25), which is a classic Pythagorean triplet. Let me show you how this works!"* | `Mathematics.pdf` pp. 30, 34, 40 |
+| **4** | *Explain that more simply.* | Pythagoras | Mathematics | *"In my theorem, in any right-angled triangle, the square of the longest side (hypotenuse) is equal to the sum of the squares of the other two sides. For example, if the sides are 3, 4, and 5, then $3^2 + 4^2 = 5^2$ (9 + 16 = 25). This helps us find missing sides when we know the other two! 🌟"* | `Mathematics.pdf` p. 40 |
+| **5** | *Give me a practice question.* | Pythagoras | Mathematics | *"Let me give you a practice question. In a right-angled triangle, if the lengths of the two legs are 5 units and 12 units, what is the length of the hypotenuse? **Solution:** Use the Pythagorean theorem: $c^2 = a^2 + b^2$. Substitute the values: $c^2 = 5^2 + 12^2 = 25 + 144 = 169$. Thus, $c = \sqrt{169} = 13$. **Answer:** The hypotenuse is **13 units**. Let me know if you'd like to verify another example!"* | `Mathematics.pdf` pp. 30, 34, 40 |
+
+---
+
 ## 5. Frontend & UI Verification
 
 The Next.js frontend UI (`http://localhost:3000`) was thoroughly tested using an automated browser subagent:

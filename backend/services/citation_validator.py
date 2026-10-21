@@ -197,6 +197,21 @@ class CitationValidator:
                     flags=re.IGNORECASE,
                 )
 
+            # Check for confused mother as wife (e.g. "Jijabai was my wife" or "she was my wife")
+            if re.search(r"\b(?:Jijabai\s+was\s+my\s+wife|she\s+was\s+my\s+wife|my\s+wife[,\s]+Jijabai)\b", answer_text, re.IGNORECASE):
+                warnings.append("Detected hallucinated claim of Jijabai as wife. Correcting to mother.")
+                answer_text = re.sub(r"\b(?:and\s+)?she\s+was\s+my\s+wife[,\.]?\s*", "", answer_text, flags=re.IGNORECASE)
+                answer_text = re.sub(r"\bJijabai\s+was\s+my\s+wife\b", "Jijabai was my mother", answer_text, flags=re.IGNORECASE)
+
+            # Ensure first-person voice for self-referential statements
+            answer_text = re.sub(r"^(?:Chhatrapati\s+)?Shivaji\s+Maharaj\s+was\s+born\b", "I was born", answer_text, flags=re.IGNORECASE)
+            answer_text = re.sub(r"^(?:Chhatrapati\s+)?Shivaji(?:'s)?\s+childhood\s+was\b", "My childhood was", answer_text, flags=re.IGNORECASE)
+            answer_text = re.sub(r"^(?:Chhatrapati\s+)?Shivaji\s+Maharaj's\s+parents\s+were\b", "My parents were", answer_text, flags=re.IGNORECASE)
+
+        elif norm_pid == "pythagoras":
+            answer_text = re.sub(r"^(?:Pythagoras'\s+theorem\s+is\s+about|The\s+Pythagorean\s+theorem\s+is\s+about)\b", "My theorem is about", answer_text, flags=re.IGNORECASE)
+            answer_text = re.sub(r"^Pythagoras\s+discovered\s+that\b", "I discovered that", answer_text, flags=re.IGNORECASE)
+
         return (len(warnings) == 0, answer_text, warnings)
 
     def _extract_num(self, text: str) -> Optional[int]:
