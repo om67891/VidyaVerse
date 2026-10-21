@@ -199,7 +199,7 @@ export default function ChatSidebar({
       {/* Footer info */}
       <div className="p-3 border-t border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
         <span>VidyaVerse Persona System</span>
-        <span className="font-semibold text-slate-400">Part 03</span>
+        <span className="font-semibold text-slate-400">Part 05</span>
       </div>
     </aside>
   );

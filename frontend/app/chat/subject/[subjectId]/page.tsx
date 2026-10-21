@@ -16,6 +16,7 @@ import Navbar from "@/components/Navbar";
 import PersonaSelectionModal from "@/components/personas/PersonaSelectionModal";
 import ChatSidebar from "@/components/ChatSidebar";
 import { SinglePersonaAvatar } from "@/components/Avatar";
+import RichMarkdown from "@/components/RichMarkdown";
 import { chatStorage, type SavedConversation } from "@/lib/chatStorage";
 import { api } from "@/lib/api";
 import type { Subject, Persona, UIMessage, HistoryMessage } from "@/types";
@@ -377,7 +378,7 @@ function SubjectChatContent() {
                         {msg.persona_name}
                       </span>
                     )}
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    <RichMarkdown content={msg.content} isUser={isUser} subjectId={subjectId} />
 
                     {/* Contextual Suggested Choices */}
                     {msg.suggested_choices && msg.suggested_choices.length > 0 && (

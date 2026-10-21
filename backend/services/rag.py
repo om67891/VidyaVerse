@@ -964,37 +964,55 @@ def generate_with_ollama_chat(messages: list[dict], temperature: float = 0.25) -
     """
     Send structured chat messages to Ollama's /api/chat endpoint.
     Strips chain-of-thought thinking blocks and dialog artifacts.
+    Gracefully falls back to qwen3:1.7b if the configured primary model is not yet available in Ollama.
     """
     url = f"{settings.ollama_base_url}/api/chat"
-    payload = {
-        "model": settings.ollama_model,
-        "messages": messages,
-        "stream": False,
-        "options": {
-            "temperature": temperature,
-            "num_predict": 600,
-        },
-        "think": False,
-    }
+    models_to_try = [settings.ollama_model]
+    if settings.ollama_model != "qwen3:1.7b":
+        models_to_try.append("qwen3:1.7b")
 
-    try:
-        resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)
-        resp.raise_for_status()
-        data = resp.json()
-        raw = data.get("message", {}).get("content", "").strip()
-        return _clean_output_text(raw)
-    except requests.exceptions.ConnectionError:
-        raise RuntimeError(
-            f"Cannot connect to Ollama at {settings.ollama_base_url}. "
-            "Make sure Ollama is running: `ollama serve`"
-        )
-    except requests.exceptions.Timeout:
-        raise RuntimeError(
-            f"Ollama timed out after {settings.ollama_timeout}s. "
-            "The model may be loading. Try again in a moment."
-        )
-    except requests.exceptions.HTTPError as e:
-        raise RuntimeError(f"Ollama HTTP error: {e}")
+    last_error = None
+    for model_name in models_to_try:
+        payload = {
+            "model": model_name,
+            "messages": messages,
+            "stream": False,
+            "options": {
+                "temperature": temperature,
+                "num_predict": 600,
+            },
+            "think": False,
+        }
+
+        try:
+            resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)
+            if resp.status_code == 404 and model_name != models_to_try[-1]:
+                # Primary model not found (e.g. downloading), try fallback
+                continue
+            resp.raise_for_status()
+            data = resp.json()
+            raw = data.get("message", {}).get("content", "").strip()
+            return _clean_output_text(raw)
+        except requests.exceptions.ConnectionError:
+            raise RuntimeError(
+                f"Cannot connect to Ollama at {settings.ollama_base_url}. "
+                "Make sure Ollama is running: `ollama serve`"
+            )
+        except requests.exceptions.Timeout:
+            raise RuntimeError(
+                f"Ollama timed out after {settings.ollama_timeout}s. "
+                "The model may be loading. Try again in a moment."
+            )
+        except requests.exceptions.HTTPError as e:
+            if resp.status_code == 404 and model_name != models_to_try[-1]:
+                continue
+            raise RuntimeError(f"Ollama HTTP error: {e}")
+        except Exception as e:
+            last_error = e
+
+    if last_error:
+        raise RuntimeError(f"Ollama error: {last_error}")
+    raise RuntimeError("Ollama failed to generate response")
 
 
 # ── Source Citation Assembly ───────────────────────────────────────────────────

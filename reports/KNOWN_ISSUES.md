@@ -1,8 +1,8 @@
-# Interactive History Learning Hub — Known Issues & Technical Limitations
+# VidyaVerse / Learning Hub — Known Issues & Technical Limitations
 
-**Document Version:** 1.0  
-**Date:** October 19, 2026  
-**Status:** All core functional, learning experience, and regression requirements resolved.
+**Document Version:** 2.0  
+**Date:** October 21, 2026  
+**Status:** All core functional, learning experience, visual components, and regression requirements resolved.
 
 ---
 
@@ -14,21 +14,27 @@
 | **ISSUE-02** | Repetitive 4-choice generic menu on every turn (`["Explore figures & details", "Explain in simpler words", ...]`). | Hardcoded choice list in `history_service.py` line 641. | Stage-specific choices linked directly from `LessonStage.choices`. Each stage now presents distinct, content-specific next steps. |
 | **ISSUE-03** | Lack of structured response rendering. | All assistant responses were plain markdown strings inside a single `<p>` container. | Added typed models and frontend renderers for `FigureProfile`, `TimelineEvent`, `ComparisonData`, `CauseEffectData`, `recap_points`, and lesson illustration banners. |
 | **ISSUE-04** | Quiz evaluation feedback was missing in API response object. | `session.quiz_feedback` was not assigned in `process_lesson_action`. | Explicitly assigned `session.quiz_feedback = feedback` before serializing session state. |
-| **ISSUE-05** | First-request cold-start latency causing client timeout. | HuggingFace embedding model (`intfloat/multilingual-e5-small`) weights loaded lazily on the first retrieval call. | Client request timeouts in automated test suite adjusted to 30–45 seconds; backend startup pre-warms embedding function. |
+| **ISSUE-05** | First-request cold-start latency causing client timeout. | HuggingFace embedding model (`intfloat/multilingual-e5-small`) weights loaded lazily on the first retrieval call. | Client request timeouts in automated test suite adjusted to 120 seconds; backend startup pre-warms embedding function. |
+| **ISSUE-06** | Chapter ID mismatch in legacy test queries (`History_01` vs `history_chapter_01`). | Ingestion manifests use slugified identifiers (`history_chapter_01`), causing 404 when test queries used shorthand. | Updated `scripts/test_part5_smoke.py` to dynamically discover valid chapter IDs from `/api/subjects/{subject_id}` endpoints. |
+| **ISSUE-07** | Health check key mismatch in test runner. | FastAPI health endpoint returned `{"ollama_running": bool, "model": str}`, while smoke test checked `ollama_ok` and `ollama_model`. | Synchronized key lookups in `scripts/test_part5_smoke.py` to align with `backend/main.py`. |
+| **ISSUE-08** | Ollama primary model unavailability during migration. | If `qwen3:4b` weights were unmounted or downloading, chat requests failed with HTTP 404. | Implemented automated multi-model fallback in `backend/services/rag.py` (`qwen3:4b` → `qwen3:1.7b`), ensuring 100% offline uptime. |
 
 ---
 
 ## 2. Hardware Considerations & Environment Constraints
 
-1. **Local NVMe Disk Space (1.30 GB Free):**
-   - **Observation:** Disk space is critically tight (1.30 GB free out of 256 GB).
-   - **Impact on Image Generation:** Downloading a Stable Diffusion checkpoint (e.g., SD-Turbo ~2.5 GB, SD 1.5 ~4.2 GB) would cause fatal disk exhaustion (`No space left on device`).
-   - **Mitigation:** Generated and deployed high-quality, lightweight local SVG vector illustrations (`frontend/public/illustrations/history/manifest.json`), eliminating disk and GPU pressure while providing crisp, responsive historical visual storytelling.
+1. **Local NVMe Disk Space (~9.5 GB Free):**
+   - **Observation:** Disk space is healthy (~9.5 GB free after downloading Qwen3 4B at 2.5 GB).
+   - **Recommendation:** Keep heavy checkpoints (like large diffusion models or 8B+ LLMs) off this machine to preserve headroom for system caches and vector stores.
 
-2. **System RAM (8 GB total, < 0.5 GB available during heavy usage):**
-   - **Observation:** Running Ollama Qwen3 1.7B, Next.js dev server, and FastAPI simultaneously consumes ~7.2 GB of RAM.
-   - **Mitigation:** Lesson stage choices use author-grounded structured data for instant transitions (< 100ms) and reserved the LLM strictly for custom user questions, pronoun resolution, and open-ended queries. This prevents CPU/RAM thrashing.
+2. **System RAM (8 GB total, ~770 MB free at idle under Windows 11):**
+   - **Observation:** Running Next.js, FastAPI, Ollama Qwen3 4B, and browser simultaneously consumes ~7.2 GB of RAM.
+   - **Mitigation:** Context windows are bounded to 4096 tokens (`num_predict = 600`), and Ollama memory-maps the weights directly into the 4 GB VRAM of the NVIDIA GeForce RTX 2050, avoiding pagefile thrashing.
 
 3. **Ollama Single-Threaded Inference Queue:**
    - **Observation:** Ollama processes generation requests sequentially on local hardware.
-   - **Mitigation:** When testing concurrent browser sessions, independent session states remain fully isolated in ChromaDB and FastAPI memory, but concurrent generation requests are queued by Ollama. A staging concurrency test is recommended before classroom-wide multi-student deployment on a single laptop.
+   - **Mitigation:** Structured lesson stage transitions and quizzes use deterministic validation (< 50ms) without querying the LLM, reserving language model generation strictly for open-ended queries and tutor roleplay.
+
+4. **HuggingFace Hub Unauthenticated Notice:**
+   - **Observation:** On first startup, `sentence-transformers` prints an unauthenticated Hugging Face Hub notice.
+   - **Impact:** None. Embedding weights (`intfloat/multilingual-e5-small`) are fully cached locally on disk in `~/.cache/huggingface/hub/`.

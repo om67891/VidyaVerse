@@ -13,7 +13,6 @@ import {
   ArrowLeft,
   Send,
   Plus,
-  BookOpen,
   AlertTriangle,
   FileText,
   User,
@@ -26,6 +25,7 @@ import { chatStorage, type SavedConversation } from "@/lib/chatStorage";
 import ChatSidebar from "@/components/ChatSidebar";
 import PersonaSelectionModal from "@/components/personas/PersonaSelectionModal";
 import { SinglePersonaAvatar } from "@/components/Avatar";
+import RichMarkdown from "@/components/RichMarkdown";
 import type { Chapter, UIMessage, HistoryMessage, Persona } from "@/types";
 
 function genId(): string {
@@ -60,60 +60,6 @@ function MessageBubble({
 }) {
   const isUser = msg.role === "user";
 
-  const renderContent = (text: string) => {
-    const lines = text.split("\n");
-    return lines.map((line, lineIdx) => {
-      const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
-      let content = line;
-      let isHeading = false;
-      let headingLevel = 0;
-      if (headingMatch) {
-        isHeading = true;
-        headingLevel = headingMatch[1].length;
-        content = headingMatch[2];
-      }
-
-      const parts = content.split(/(\*\*[^*]+\*\*)/g);
-      const renderedParts = parts.map((part, pIdx) => {
-        if (part.startsWith("**") && part.endsWith("**")) {
-          return (
-            <strong
-              key={pIdx}
-              style={{ fontWeight: 700, color: isUser ? "#FFFFFF" : "var(--text-primary)" }}
-            >
-              {part.slice(2, -2)}
-            </strong>
-          );
-        }
-        return part;
-      });
-
-      if (isHeading) {
-        return (
-          <span
-            key={lineIdx}
-            style={{
-              display: "block",
-              fontWeight: 700,
-              fontSize: headingLevel === 1 ? "1.1rem" : headingLevel === 2 ? "1.0rem" : "0.92rem",
-              marginTop: lineIdx > 0 ? "0.5rem" : "0",
-              marginBottom: "0.2rem",
-              color: isUser ? "#FFFFFF" : "var(--text-primary)",
-            }}
-          >
-            {renderedParts}
-          </span>
-        );
-      }
-
-      return (
-        <span key={lineIdx} style={{ display: "block", minHeight: line === "" ? "0.6rem" : "auto" }}>
-          {renderedParts}
-        </span>
-      );
-    });
-  };
-
   if (isUser) {
     return (
       <div
@@ -137,14 +83,9 @@ function MessageBubble({
         >
           <div
             className="bubble-user"
-            style={{
-              minWidth: "fit-content",
-              whiteSpace: "pre-wrap",
-              wordBreak: "normal",
-              overflowWrap: "break-word",
-            }}
+            style={{ minWidth: "fit-content", overflowWrap: "break-word" }}
           >
-            {renderContent(msg.content)}
+            <RichMarkdown content={msg.content} isUser={true} subjectId={subjectId} />
           </div>
           <span style={{ fontSize: "0.65rem", color: "var(--text-muted)", paddingRight: "0.25rem" }}>
             {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -181,7 +122,6 @@ function MessageBubble({
         width: "100%",
       }}
     >
-      {/* Bot Persona Avatar */}
       <SinglePersonaAvatar
         src={msg.persona_avatar || personaAvatar}
         name={msg.persona_name || personaName}
@@ -189,7 +129,6 @@ function MessageBubble({
         size={36}
       />
 
-      {/* Content Column */}
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "0.45rem" }}>
         {msg.persona_name && (
           <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--accent)", textTransform: "uppercase", letterSpacing: "0.03em" }}>
@@ -214,7 +153,7 @@ function MessageBubble({
               Error
             </div>
           )}
-          {renderContent(msg.content)}
+          <RichMarkdown content={msg.content} isUser={false} subjectId={subjectId} />
         </div>
 
         {/* Verified Textbook Citations */}

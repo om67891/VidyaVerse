@@ -40,8 +40,8 @@ class Settings(BaseSettings):
 
     # ── Ollama / LLM ───────────────────────────────────────────────────────
     ollama_base_url: str = "http://localhost:11434"
-    ollama_model: str = "qwen3:1.7b"
-    ollama_timeout: int = 120  # seconds
+    ollama_model: str = "qwen3:4b"     # Upgraded from 1.7b — ~2.5 GB Q4 quantized
+    ollama_timeout: int = 180  # seconds (4b is slower; conservative for 8 GB RAM)
 
     # ── RAG parameters ─────────────────────────────────────────────────────
     rag_top_k: int = 5
