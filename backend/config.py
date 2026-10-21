@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     chroma_collection_name: str = "class5_evs_chapters"
     history_collection_name: str = "history_master"
     history_pdf_path: Path = PROJECT_ROOT / "History" / "History.pdf"
+    math_collection_name: str = "mathematics_master"
+    math_pdf_path: Path = PROJECT_ROOT / "Maths" / "Mathematics.pdf"
+
+    # ── Database ───────────────────────────────────────────────────────────
+    database_path: Path = PROJECT_ROOT / "data" / "vidyaverse.db"
 
     # ── Embedding model ────────────────────────────────────────────────────
     embedding_model_name: str = "intfloat/multilingual-e5-small"

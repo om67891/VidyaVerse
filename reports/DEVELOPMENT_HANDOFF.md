@@ -1,9 +1,119 @@
 # Developer Practical Handoff Guide
 **Project:** Learning Hub / VidyaVerse (Offline-First Educational Platform)  
 **Location:** `reports/DEVELOPMENT_HANDOFF.md`  
-**Reference Reports:** [TEXTBOOK_INGESTION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/TEXTBOOK_INGESTION_REPORT.md), [FRONTEND_IMPLEMENTATION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/FRONTEND_IMPLEMENTATION_REPORT.md), [PERSONA_IMPLEMENTATION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/PERSONA_IMPLEMENTATION_REPORT.md), [PERSONA_EVALUATION_RESULTS.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/PERSONA_EVALUATION_RESULTS.md)  
+**Reference Reports:**
+- [TEXTBOOK_INGESTION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/TEXTBOOK_INGESTION_REPORT.md) (Part 01)
+- [FRONTEND_IMPLEMENTATION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/FRONTEND_IMPLEMENTATION_REPORT.md) (Part 02)
+- [PERSONA_IMPLEMENTATION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/PERSONA_IMPLEMENTATION_REPORT.md) (Part 03)
+- [PERSONA_EVALUATION_RESULTS.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/PERSONA_EVALUATION_RESULTS.md) (Part 03)
+- [KNOWLEDGE_AND_TUTORING_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/KNOWLEDGE_AND_TUTORING_REPORT.md) (Part 04)
+- [CONVERSATION_PERSISTENCE_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/CONVERSATION_PERSISTENCE_REPORT.md) (Part 04)
+- [PART_04_TEST_RESULTS.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/PART_04_TEST_RESULTS.md) (Part 04)  
 **Date:** October 21, 2026  
-**Implementation Stage:** Part 01, Part 02 & Part 03 Complete — Ready for Part 04 (Adaptive Tutoring & Retrieval Progression)
+**Implementation Stage:** Parts 01, 02, 03 & 04 Complete — Ready for Part 05 (Visual Learning, Practice Studios & Final Release)
+
+---
+
+## 1. Quick Start Commands (PowerShell)
+
+### Terminal 1: Start Backend (FastAPI on Port 8000)
+```powershell
+cd C:\Users\spyte\Desktop\ChatBot_POC
+.\.venv\Scripts\uvicorn.exe backend.main:app --host 127.0.0.1 --port 8000
+```
+- Health Check: `http://localhost:8000/api/health`
+- Conversations API: `http://localhost:8000/api/conversations` (POST, GET with `?subject_id=&chat_scope=&chapter_id=`)
+- Learning Map API: `http://localhost:8000/api/learning-map/{subject_id}/{chapter_id}`
+- Glossary API: `http://localhost:8000/api/glossary/{subject_id}`
+- Quiz API: `http://localhost:8000/api/quiz/{subject_id}/{chapter_id}` & `POST /api/quiz/validate`
+- Math Validator: `POST http://localhost:8000/api/math/validate`
+- Swagger Docs: `http://localhost:8000/docs`
+
+### Terminal 2: Start Frontend (Next.js on Port 3000)
+```powershell
+cd C:\Users\spyte\Desktop\ChatBot_POC\frontend
+npm run dev
+```
+- Classroom Dashboard: `http://localhost:3000`
+- History Dashboard: `http://localhost:3000/subjects/history`
+- Mathematics Dashboard: `http://localhost:3000/subjects/mathematics`
+- EVS Dashboard: `http://localhost:3000/subjects/evs`
+- Scoped Chapter Chat: `http://localhost:3000/chat/{chapterId}?persona={personaId}`
+- Scoped Subject Studio Chat: `http://localhost:3000/chat/subject/{subjectId}?persona={personaId}`
+
+### Terminal 3: Verify Ollama Service
+```powershell
+ollama list
+# Verify qwen3:1.7b is present
+```
+
+---
+
+## 2. Test Execution Commands
+
+```powershell
+cd C:\Users\spyte\Desktop\ChatBot_POC
+
+# 1. Retrieval Scope & Metadata Verification (7/7 pass)
+.\.venv\Scripts\python.exe scripts/test_part4_retrieval.py
+
+# 2. SQLite Persistence & Server Restart Verification (8/8 pass)
+.\.venv\Scripts\python.exe scripts/test_part4_persistence.py
+
+# 3. Tutoring, Math Validation, Glossary & Quiz Engine (10/10 pass)
+.\.venv\Scripts\python.exe scripts/test_part4_tutoring.py
+
+# 4. Live FastAPI HTTP Integration Tests (11/11 pass)
+.\.venv\Scripts\python.exe scripts/test_part4_api_live.py
+
+# 5. History Interactive Prototype (14/14 pass)
+.\.venv\Scripts\python.exe test_history_prototype.py
+
+# 6. 24 Persona Intelligence Specifications (120/120 pass)
+.\.venv\Scripts\python.exe scripts/evaluate_personas.py
+
+# 7. Frontend Production Typecheck & Turbopack Build (0 errors, 9/9 routes)
+cd frontend
+npx tsc --noEmit
+npm run build
+```
+
+---
+
+## 3. Authoritative Backend Services & Database Contracts
+
+### 3.1 Persistence & Data Storage
+- SQLite database location: `data/vidyaverse.db` (WAL mode, foreign keys enabled).
+- Tables: `conversations` and `messages`.
+- Independent history: `list_conversations(subject_id, chat_scope, chapter_id)`.
+- Authoritative locking: `persona_id`, `subject_id`, and `chat_scope` are locked in the database and never overwritten in place.
+
+### 3.2 Retrieval Topology
+- History: `history_master` (267 chunks, filtered by `lesson_number` or full subject).
+- Mathematics: `mathematics_master` (405 chunks, filtered by `chapter_id` or full subject).
+- EVS: `class5_evs_chapters` (167 chunks, filtered by `chapter_id` or full subject).
+- Zero Leaks: Negative tests prove 0 outside chunks leak into chapter queries.
+
+### 3.3 Guardrails & Validation
+- General Knowledge: Zero textbook citations attached to general knowledge answers.
+- Historical Accuracy: Shivaji Maharaj family tree cross-referenced against ground truth; hallucinated parents/spouses/children automatically corrected.
+- Mathematics: Deterministic calculation engine for Pythagoras, 30-60-90, Apollonius, Coordinate Geometry, Trigonometry, and Mensuration.
+- Security: Quiz correct answer keys are never exposed in student-facing question payloads.
+
+---
+
+## 4. Interfaces & Roadmap for Part 05
+
+Part 05 focuses on Visual Learning, Interactive Practice Studios, and Readiness Verification:
+1. **Interactive Formula Studios & SVG Diagrams:**
+   - Render interactive geometry diagrams for Pythagoras Theorem, Tangent Secant, and Coordinate Geometry.
+2. **Visual Learning Cards:**
+   - Connect frontend response format cards (`figure_profile`, `timeline`, `cause_effect`, `comparison`, `worked_solution`) with dynamic rich styling.
+3. **Practice Studios:**
+   - Interactive practice components consuming `/api/quiz/...` and `/api/math/validate`.
+4. **End-to-End Browser Readiness Verification:**
+   - Run automated browser tests across History, Math, and EVS full user flows.
+
 
 ---
 

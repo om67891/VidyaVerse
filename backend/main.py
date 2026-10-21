@@ -22,7 +22,18 @@ from backend.schemas import (
     PersonaSchema,
     HistoryActionRequest,
     HistoryAskRequest,
+    CreateConversationRequest,
+    SendMessageRequest,
+    QuizValidateRequest,
+    MathValidateRequest,
 )
+from backend.repositories.conversation_repository import get_conversation_repository
+from backend.services.tutoring_service import get_tutoring_service, TutoringMessageRequest
+from backend.services.learning_map_service import get_learning_map_service
+from backend.services.glossary_service import get_glossary_service
+from backend.services.quiz_service import get_quiz_service
+from backend.services.math_validator import get_math_validator
+from backend.services.persona_manager import get_persona_manager
 from backend.services.catalog import (
     get_all_subjects,
     get_subject,
@@ -278,5 +289,212 @@ async def dev_diagnostics(chapter_id: str = "EVS_CH01", query: str = "What is hi
     """
     from backend.services.rag import get_diagnostics
     return get_diagnostics(chapter_id.upper(), query)
+
+
+# ── Part 04: Persistent Conversations Endpoints ──────────────────────────────
+
+
+@app.post("/api/conversations")
+async def create_conversation(req: CreateConversationRequest):
+    """
+    Create a new persistent conversation with strictly locked persona, subject, and scope.
+    Survives server restarts via SQLite.
+    """
+    repo = get_conversation_repository()
+    pm = get_persona_manager()
+
+    # Validate persona
+    persona = pm.get_persona(req.persona_id)
+    if not persona:
+        raise HTTPException(status_code=400, detail=f"Persona '{req.persona_id}' is not registered.")
+
+    # Validate subject
+    norm_sub = req.subject_id.strip().lower()
+    if norm_sub in ("math", "maths"):
+        norm_sub = "mathematics"
+    if norm_sub not in ("history", "mathematics", "evs"):
+        raise HTTPException(status_code=400, detail=f"Invalid subject '{req.subject_id}'.")
+
+    # Scope validation
+    scope = req.chat_scope.strip().lower()
+    if scope not in ("subject", "chapter"):
+        raise HTTPException(status_code=400, detail=f"Invalid chat scope '{req.chat_scope}'. Must be 'subject' or 'chapter'.")
+
+    actual_chap_id = None
+    if scope == "chapter":
+        if not req.chapter_id:
+            raise HTTPException(status_code=400, detail="chapter_id is required when chat_scope is 'chapter'.")
+        actual_chap_id = req.chapter_id.strip()
+    else:
+        # Subject scope strictly forces chapter_id to null
+        actual_chap_id = None
+
+    conv = repo.create_conversation(
+        subject_id=norm_sub,
+        chat_scope=scope,
+        chapter_id=actual_chap_id,
+        persona_id=persona["persona_id"],
+        title=req.title,
+    )
+    return conv
+
+
+@app.get("/api/conversations")
+async def list_conversations(
+    subject_id: Optional[str] = None,
+    chat_scope: Optional[str] = None,
+    chapter_id: Optional[str] = None,
+    limit: int = 50,
+):
+    """
+    List conversations filtered by subject, chat scope, and chapter.
+    Enforces independent history views for subject-wide vs chapter-wise chats.
+    """
+    repo = get_conversation_repository()
+    norm_sub = subject_id.strip().lower() if subject_id else None
+    if norm_sub in ("math", "maths"):
+        norm_sub = "mathematics"
+
+    return repo.list_conversations(
+        subject_id=norm_sub,
+        chat_scope=chat_scope.strip().lower() if chat_scope else None,
+        chapter_id=chapter_id.strip() if chapter_id else None,
+        limit=limit,
+    )
+
+
+@app.get("/api/conversations/{conversation_id}")
+async def get_conversation(conversation_id: str):
+    """Retrieve full conversation details, stored messages, and learning progress."""
+    repo = get_conversation_repository()
+    conv = repo.get_conversation(conversation_id)
+    if not conv:
+        raise HTTPException(status_code=404, detail=f"Conversation '{conversation_id}' not found.")
+    messages = repo.get_messages(conversation_id)
+    conv["messages"] = messages
+    return conv
+
+
+@app.post("/api/conversations/{conversation_id}/messages")
+async def send_message_to_conversation(conversation_id: str, req: SendMessageRequest):
+    """
+    Send a message or execute an interactive choice within an existing conversation.
+    Authoritative scope and persona are enforced from the database.
+    """
+    ts = get_tutoring_service()
+    try:
+        resp = ts.process_message(
+            TutoringMessageRequest(
+                conversation_id=conversation_id,
+                message=req.message,
+                action_payload=req.action_payload,
+                response_mode=req.response_mode,
+                question_format=req.question_format,
+            )
+        )
+        return resp
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal tutoring error: {e}")
+
+
+@app.delete("/api/conversations/{conversation_id}")
+async def delete_conversation(conversation_id: str):
+    """Delete a specific conversation and all associated messages."""
+    repo = get_conversation_repository()
+    deleted = repo.delete_conversation(conversation_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Conversation '{conversation_id}' not found.")
+    return {"status": "deleted", "conversation_id": conversation_id}
+
+
+# ── Learning Maps & Moments ───────────────────────────────────────────────────
+
+
+@app.get("/api/learning-map/{subject_id}/{chapter_id}")
+async def get_chapter_learning_map(subject_id: str, chapter_id: str):
+    """Return the structured learning map, objectives, key facts, and moments for a chapter."""
+    lms = get_learning_map_service()
+    ch_map = lms.get_chapter_map(subject_id, chapter_id)
+    if not ch_map:
+        raise HTTPException(status_code=404, detail=f"Learning map not found for {subject_id} / {chapter_id}")
+    return ch_map
+
+
+# ── Glossary & Definitions ─────────────────────────────────────────────────────
+
+
+@app.get("/api/glossary/{subject_id}")
+async def list_glossary_terms(subject_id: str, chapter_id: Optional[str] = None):
+    """Return chapter-specific glossary terms with child-friendly and detailed definitions."""
+    gs = get_glossary_service()
+    return gs.get_terms_for_chapter(subject_id, chapter_id)
+
+
+# ── Interactive Quizzes ────────────────────────────────────────────────────────
+
+
+@app.get("/api/quiz/{subject_id}/{chapter_id}")
+async def get_chapter_quiz(subject_id: str, chapter_id: str):
+    """Return student-safe quiz questions without exposing the private correct answer keys."""
+    qs = get_quiz_service()
+    questions = qs.get_questions_for_chapter(subject_id, chapter_id)
+    return questions
+
+
+@app.post("/api/quiz/validate")
+async def validate_quiz_answer(req: QuizValidateRequest):
+    """Deterministically validates a student's quiz answer and returns constructive feedback."""
+    qs = get_quiz_service()
+    res = qs.validate_answer(req.question_id, req.selected_index)
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Question '{req.question_id}' not found.")
+    return res
+
+
+# ── Deterministic Mathematical Validation ──────────────────────────────────────
+
+
+@app.post("/api/math/validate")
+async def validate_math_calculation(req: MathValidateRequest):
+    """
+    Deterministic mathematical calculation and validation engine for Std X Mathematics.
+    Supports Pythagoras, 30-60-90, coordinate geometry, trigonometry, and mensuration.
+    """
+    mv = get_math_validator()
+    op = req.operation.lower().strip()
+    p = req.params
+
+    if op == "pythagoras":
+        return mv.solve_pythagoras(a=p.get("a"), b=p.get("b"), c=p.get("c"))
+    elif op == "30_60_90":
+        hyp = p.get("hypotenuse")
+        if hyp is None:
+            raise HTTPException(status_code=400, detail="hypotenuse is required for 30_60_90 calculation.")
+        return mv.solve_30_60_90(hyp)
+    elif op == "geometric_mean":
+        return mv.solve_geometric_mean(p.get("seg1", 0), p.get("seg2", 0))
+    elif op == "apollonius":
+        return mv.solve_apollonius(p.get("ab", 0), p.get("ac", 0), p.get("bm", 0))
+    elif op == "distance":
+        return mv.coordinate_distance(p.get("x1", 0), p.get("y1", 0), p.get("x2", 0), p.get("y2", 0))
+    elif op == "midpoint":
+        return mv.coordinate_midpoint(p.get("x1", 0), p.get("y1", 0), p.get("x2", 0), p.get("y2", 0))
+    elif op == "slope":
+        return mv.coordinate_slope(p.get("x1", 0), p.get("y1", 0), p.get("x2", 0), p.get("y2", 0))
+    elif op == "trig":
+        return mv.trig_standard_value(p.get("func", "sin"), p.get("angle", 30))
+    elif op == "cylinder":
+        return mv.mensuration_cylinder(p.get("r", 0), p.get("h", 0))
+    elif op == "cone":
+        return mv.mensuration_cone(p.get("r", 0), p.get("h", 0))
+    elif op == "sphere":
+        return mv.mensuration_sphere(p.get("r", 0))
+    else:
+        raise HTTPException(status_code=400, detail=f"Unsupported math operation: {op}")
+
 
 

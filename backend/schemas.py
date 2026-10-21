@@ -120,3 +120,32 @@ class HistoryAskRequest(BaseModel):
     session_id: str
     question: str = Field(..., min_length=1)
 
+
+# ── Part 04 Persistent Conversation & Interactive Tutoring Schemas ───────────
+
+
+class CreateConversationRequest(BaseModel):
+    subject_id: str
+    chat_scope: str = Field("chapter", description="'subject' or 'chapter'")
+    chapter_id: Optional[str] = None
+    persona_id: str
+    title: Optional[str] = None
+
+
+class SendMessageRequest(BaseModel):
+    message: str = Field(..., min_length=1)
+    action_payload: Optional[dict] = None
+    response_mode: Optional[str] = None
+    question_format: Optional[str] = None
+
+
+class QuizValidateRequest(BaseModel):
+    question_id: str
+    selected_index: int
+
+
+class MathValidateRequest(BaseModel):
+    operation: str  # "pythagoras" | "30_60_90" | "distance" | "midpoint" | "slope" | "cylinder" | "cone" | "sphere" | "trig"
+    params: dict = Field(default_factory=dict)
+
+

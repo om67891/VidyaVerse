@@ -54,7 +54,7 @@ logs/
 .coverage
 htmlcov/
 
-# Do NOT ignore these important project files:
-# vectorstore/   ← persisted ChromaDB (keep)
-# Environmental Studies/   ← PDFs (keep)
-# a.ipynb   ← notebook (keep)
+# Persistent conversation databases (user private data)
+data/
+*.db
+

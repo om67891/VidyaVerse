@@ -109,5 +109,88 @@ export const api = {
   }> {
     return apiFetch("/api/history/status");
   },
+
+  // ── Part 04: Persistent Conversations & Interactive Tutoring ───────────────
+
+  createConversation(req: {
+    subject_id: string;
+    chat_scope: "subject" | "chapter";
+    chapter_id?: string | null;
+    persona_id: string;
+    title?: string;
+  }): Promise<any> {
+    return apiFetch("/api/conversations", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
+  },
+
+  listConversations(params?: {
+    subject_id?: string;
+    chat_scope?: string;
+    chapter_id?: string;
+    limit?: number;
+  }): Promise<any[]> {
+    const q = new URLSearchParams();
+    if (params?.subject_id) q.set("subject_id", params.subject_id);
+    if (params?.chat_scope) q.set("chat_scope", params.chat_scope);
+    if (params?.chapter_id) q.set("chapter_id", params.chapter_id);
+    if (params?.limit) q.set("limit", String(params.limit));
+    const qs = q.toString() ? `?${q.toString()}` : "";
+    return apiFetch(`/api/conversations${qs}`);
+  },
+
+  getConversation(conversationId: string): Promise<any> {
+    return apiFetch(`/api/conversations/${encodeURIComponent(conversationId)}`);
+  },
+
+  sendMessage(
+    conversationId: string,
+    req: {
+      message: string;
+      action_payload?: any;
+      response_mode?: string;
+      question_format?: string;
+    }
+  ): Promise<any> {
+    return apiFetch(`/api/conversations/${encodeURIComponent(conversationId)}/messages`, {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
+  },
+
+  deleteConversation(conversationId: string): Promise<any> {
+    return apiFetch(`/api/conversations/${encodeURIComponent(conversationId)}`, {
+      method: "DELETE",
+    });
+  },
+
+  getLearningMap(subjectId: string, chapterId: string): Promise<any> {
+    return apiFetch(`/api/learning-map/${encodeURIComponent(subjectId)}/${encodeURIComponent(chapterId)}`);
+  },
+
+  getGlossary(subjectId: string, chapterId?: string): Promise<any[]> {
+    const q = chapterId ? `?chapter_id=${encodeURIComponent(chapterId)}` : "";
+    return apiFetch(`/api/glossary/${encodeURIComponent(subjectId)}${q}`);
+  },
+
+  getQuiz(subjectId: string, chapterId: string): Promise<any[]> {
+    return apiFetch(`/api/quiz/${encodeURIComponent(subjectId)}/${encodeURIComponent(chapterId)}`);
+  },
+
+  validateQuiz(req: { question_id: string; selected_index: number }): Promise<any> {
+    return apiFetch("/api/quiz/validate", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
+  },
+
+  validateMath(req: { operation: string; params: any }): Promise<any> {
+    return apiFetch("/api/math/validate", {
+      method: "POST",
+      body: JSON.stringify(req),
+    });
+  },
 };
+
 

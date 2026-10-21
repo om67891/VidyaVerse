@@ -102,6 +102,17 @@ def _is_history_indexed() -> bool:
         return False
 
 
+def _is_math_indexed() -> bool:
+    """Check if the mathematics_master collection has chunks."""
+    try:
+        import chromadb
+        client = chromadb.PersistentClient(path=str(settings.vectorstore_path))
+        collection = client.get_or_create_collection(settings.math_collection_name)
+        return collection.count() > 0
+    except Exception:
+        return False
+
+
 def load_subject_from_manifest(subject_key: str) -> Optional[SubjectSchema]:
     """Loads a subject and its chapters directly from its chapter_manifest.json."""
     manifest_path = MANIFEST_PATHS.get(subject_key)
@@ -120,6 +131,7 @@ def load_subject_from_manifest(subject_key: str) -> Optional[SubjectSchema]:
 
     evs_indexed = _get_evs_indexed_chapter_ids() if subject_key == "evs" else set()
     hist_indexed = _is_history_indexed() if subject_key == "history" else False
+    math_indexed = _is_math_indexed() if subject_key == "mathematics" else False
 
     chapters: list[ChapterSchema] = []
     subject_dir = manifest_path.parent.parent
@@ -137,8 +149,10 @@ def load_subject_from_manifest(subject_key: str) -> Optional[SubjectSchema]:
             # Check either standard id or legacy stem
             legacy_id = f"EVS_CH{ch_num:02d}"
             indexed = legacy_id in evs_indexed or ch["chapter_id"] in evs_indexed
+        elif subject_key == "mathematics":
+            indexed = math_indexed
         else:
-            indexed = False  # Mathematics RAG will be indexed in Part 04
+            indexed = False
 
         chapters.append(
             ChapterSchema(
