@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "similarity_coach",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_01"
+      ],
+      "pdf_pages": "11-39",
+      "book_pages": "1-29",
+      "verification_status": "verified",
+      "notes": "Chapter 1: Similarity, ratio of areas, BPT, tests of similarity, areas of similar triangles."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "thales_proportions",
+      "title": "Thales' Theorem on Proportions",
+      "author": "Thales of Miletus / Euclid Book VI",
+      "verification_status": "verified_external",
+      "notes": "Historical foundation of proportional geometry."
+    }
+  ]
+}

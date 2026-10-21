@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "subject_id": "mathematics",
+  "total_personas": 8,
+  "personas": [
+    {
+      "persona_id": "pythagoras",
+      "display_name": "Pythagoras",
+      "subject_id": "mathematics",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 6,
+        "maximum": 10
+      },
+      "short_description": "Classical Greek geometer and philosopher who explores right-angled triangles, squares of sides, and Pythagorean triplets.",
+      "avatar_path": "/avatars/mathematics/pythagoras.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_02"
+      ],
+      "expertise_topics": [
+        "Pythagoras Theorem (a² + b² = c²)",
+        "Converse of Pythagoras Theorem",
+        "Pythagorean Triplets",
+        "Geometric proofs using square areas",
+        "30°-60°-90° and 45°-45°-90° right triangles"
+      ],
+      "profile_path": "personas/mathematics/pythagoras/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "apollonius",
+      "display_name": "Apollonius",
+      "subject_id": "mathematics",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 8,
+        "maximum": 10
+      },
+      "short_description": "Great Hellenistic geometer who guides students through Apollonius Theorem relating triangle sides to the median.",
+      "avatar_path": "/avatars/mathematics/apollonius.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_02"
+      ],
+      "expertise_topics": [
+        "Apollonius Theorem (AB² + AC² = 2(AD² + BD²))",
+        "Medians of a triangle",
+        "Conic sections and circles of Apollonius",
+        "Proof of Apollonius theorem using Pythagoras theorem"
+      ],
+      "profile_path": "personas/mathematics/apollonius/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "similarity_coach",
+      "display_name": "Similarity Coach",
+      "subject_id": "mathematics",
+      "persona_type": "mentor_coach",
+      "grade_scope": {
+        "minimum": 8,
+        "maximum": 10
+      },
+      "short_description": "Dedicated visual mentor for similar triangles, Basic Proportionality Theorem, and ratio of areas.",
+      "avatar_path": "/avatars/mathematics/similarity_coach.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_01"
+      ],
+      "expertise_topics": [
+        "Ratio of areas of two triangles",
+        "Basic Proportionality Theorem (BPT) and Converse",
+        "Angle Bisector Theorem and property of 3 parallel lines",
+        "Tests of similarity: AAA, SAS, SSS",
+        "Theorem of areas of similar triangles"
+      ],
+      "profile_path": "personas/mathematics/similarity_coach/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "geometry_proof_coach",
+      "display_name": "Geometry Proof Coach",
+      "subject_id": "mathematics",
+      "persona_type": "mentor_coach",
+      "grade_scope": {
+        "minimum": 8,
+        "maximum": 10
+      },
+      "short_description": "Precise mentor for geometric constructions, formal Euclidean two-column proofs, and compass methods.",
+      "avatar_path": "/avatars/mathematics/geometry_proof_coach.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_04"
+      ],
+      "expertise_topics": [
+        "Construction of similar triangles (distinct and common vertices)",
+        "Construction of tangents to a circle",
+        "Division of line segments into ratios",
+        "Formal proof structure: Given, To Prove, Construction, Proof"
+      ],
+      "profile_path": "personas/mathematics/geometry_proof_coach/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "circle_geometry_coach",
+      "display_name": "Circle Geometry Coach",
+      "subject_id": "mathematics",
+      "persona_type": "mentor_coach",
+      "grade_scope": {
+        "minimum": 8,
+        "maximum": 10
+      },
+      "short_description": "Spatial and theorem specialist for chords, arcs, inscribed angles, cyclic quadrilaterals, and tangents.",
+      "avatar_path": "/avatars/mathematics/circle_geometry_coach.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_03"
+      ],
+      "expertise_topics": [
+        "Tangent Theorem and Tangent Segments Theorem",
+        "Inscribed Angle Theorem and Corollary",
+        "Cyclic Quadrilateral Theorem and Converse",
+        "Theorem of angle between tangent and secant",
+        "Intersecting chords inside and outside circle"
+      ],
+      "profile_path": "personas/mathematics/circle_geometry_coach/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "coordinate_geometry_coach",
+      "display_name": "Coordinate Geometry Coach",
+      "subject_id": "mathematics",
+      "persona_type": "mentor_coach",
+      "grade_scope": {
+        "minimum": 8,
+        "maximum": 10
+      },
+      "short_description": "Numerical and visual guide for the Cartesian plane, distance formula, section formula, and slope of lines.",
+      "avatar_path": "/avatars/mathematics/coordinate_geometry_coach.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_05"
+      ],
+      "expertise_topics": [
+        "Distance Formula (d = √((x₂ - x₁)² + (y₂ - y₁)²))",
+        "Section Formula for internal division",
+        "Midpoint Formula and Centroid Formula",
+        "Slope of a line (m = (y₂ - y₁) / (x₂ - x₁))",
+        "Collinearity of points"
+      ],
+      "profile_path": "personas/mathematics/coordinate_geometry_coach/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "trigonometry_coach",
+      "display_name": "Trigonometry Coach",
+      "subject_id": "mathematics",
+      "persona_type": "mentor_coach",
+      "grade_scope": {
+        "minimum": 9,
+        "maximum": 10
+      },
+      "short_description": "Practical and visual studio guide for trigonometric ratios, identities, and heights-and-distances applications.",
+      "avatar_path": "/avatars/mathematics/trigonometry_coach.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_06"
+      ],
+      "expertise_topics": [
+        "Trigonometric ratios: sin, cos, tan, cot, sec, cosec",
+        "Fundamental identities: sin²θ + cos²θ = 1, 1 + tan²θ = sec²θ, 1 + cot²θ = cosec²θ",
+        "Trigonometric values for 0°, 30°, 45°, 60°, 90°",
+        "Angles of elevation and depression",
+        "Word problems on heights and distances"
+      ],
+      "profile_path": "personas/mathematics/trigonometry_coach/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "mensuration_coach",
+      "display_name": "Mensuration Coach",
+      "subject_id": "mathematics",
+      "persona_type": "mentor_coach",
+      "grade_scope": {
+        "minimum": 8,
+        "maximum": 10
+      },
+      "short_description": "Concrete spatial specialist for surface area, volume of 3D solids (cylinder, cone, sphere, frustum), and circle sectors.",
+      "avatar_path": "/avatars/mathematics/mensuration_coach.svg",
+      "relevant_chapter_ids": [
+        "mathematics_chapter_07"
+      ],
+      "expertise_topics": [
+        "Surface area and volume of cylinder, cone, sphere, and hemisphere",
+        "Frustum of a cone",
+        "Area of sector and length of arc of circle",
+        "Area of segment of a circle",
+        "Conversion of solids (melting and recasting)"
+      ],
+      "profile_path": "personas/mathematics/mensuration_coach/profile.json",
+      "enabled": true
+    }
+  ]
+}

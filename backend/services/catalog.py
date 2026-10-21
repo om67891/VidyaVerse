@@ -267,64 +267,9 @@ def get_chapter_pdf_path(chapter_id: str) -> Optional[Path]:
 
 def get_personas(subject_id: Optional[str] = None, chapter_id: Optional[str] = None) -> list[PersonaSchema]:
     """
-    Loads personas from the persona catalogue and optionally filters or orders
+    Loads personas from the authoritative personas/ catalogue and optionally filters or orders
     by subject_id and chapter relevance.
     """
-    if not PERSONA_CATALOG_PATH.exists():
-        return []
+    from backend.services.persona_manager import get_persona_manager
+    return get_persona_manager().list_personas(subject_id=subject_id, chapter_id=chapter_id)
 
-    try:
-        with open(PERSONA_CATALOG_PATH, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except Exception as e:
-        print(f"Error loading persona catalog {PERSONA_CATALOG_PATH}: {e}")
-        return []
-
-    all_personas: list[PersonaSchema] = []
-    target_subject = subject_id.lower() if subject_id else None
-    if target_subject in ("math", "maths"):
-        target_subject = "mathematics"
-
-    # If chapter_id is provided, get its title to check relevance
-    chapter_title = ""
-    if chapter_id:
-        ch = get_chapter(chapter_id)
-        if ch:
-            chapter_title = ch.title.lower()
-
-    for p in data.get("personas", []):
-        p_sub = p.get("subject_id", "").lower()
-        if target_subject and p_sub != target_subject:
-            continue
-
-        # Look for local avatar
-        avatar_name = f"{p['persona_id']}.png"
-        avatar_rel = f"/avatars/{avatar_name}"
-        if not (settings.subjects_base_path / "frontend" / "public" / "avatars" / avatar_name).exists():
-            # Fallback to history-tutor or shivaji-maharaj if appropriate
-            if p["persona_id"] == "shivaji_maharaj":
-                avatar_rel = "/avatars/shivaji-maharaj.png"
-            else:
-                avatar_rel = "/avatars/history-tutor.png"
-
-        schema = PersonaSchema(
-            persona_id=p["persona_id"],
-            name=p["name"],
-            subject_id=p_sub,
-            persona_type=p.get("persona_type", "mentor_coach"),
-            card_summary=p.get("card_summary", ""),
-            primary_topics=p.get("primary_topics", []),
-            avatar_url=avatar_rel,
-        )
-        all_personas.append(schema)
-
-    # If chapter is specified, prioritize personas that list this chapter topic
-    if chapter_title:
-        def relevance_key(item: PersonaSchema):
-            for t in item.primary_topics:
-                if t.lower() in chapter_title or chapter_title in t.lower():
-                    return 0
-            return 1
-        all_personas.sort(key=relevance_key)
-
-    return all_personas

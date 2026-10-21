@@ -1,9 +1,9 @@
 # Developer Practical Handoff Guide
-**Project:** Learning Hub (Offline-First Educational Platform)  
+**Project:** Learning Hub / VidyaVerse (Offline-First Educational Platform)  
 **Location:** `reports/DEVELOPMENT_HANDOFF.md`  
-**Reference Reports:** [TEXTBOOK_INGESTION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/TEXTBOOK_INGESTION_REPORT.md), [FRONTEND_IMPLEMENTATION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/FRONTEND_IMPLEMENTATION_REPORT.md)  
+**Reference Reports:** [TEXTBOOK_INGESTION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/TEXTBOOK_INGESTION_REPORT.md), [FRONTEND_IMPLEMENTATION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/FRONTEND_IMPLEMENTATION_REPORT.md), [PERSONA_IMPLEMENTATION_REPORT.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/PERSONA_IMPLEMENTATION_REPORT.md), [PERSONA_EVALUATION_RESULTS.md](file:///c:/Users/spyte/Desktop/ChatBot_POC/reports/PERSONA_EVALUATION_RESULTS.md)  
 **Date:** October 21, 2026  
-**Implementation Stage:** Part 01 & Part 02 Complete — Ready for Part 03 (Persona Catalogue)
+**Implementation Stage:** Part 01, Part 02 & Part 03 Complete — Ready for Part 04 (Adaptive Tutoring & Retrieval Progression)
 
 ---
 
@@ -16,7 +16,9 @@ cd C:\Users\spyte\Desktop\ChatBot_POC
 ```
 - Health Check: `http://localhost:8000/api/health`
 - Subjects API: `http://localhost:8000/api/subjects`
-- Personas API: `http://localhost:8000/api/personas`
+- Personas API: `http://localhost:8000/api/personas` (Supports `?subject_id=` and `?chapter_id=`)
+- Single Persona API: `http://localhost:8000/api/personas/{persona_id}`
+- Chat Endpoint: `POST http://localhost:8000/api/chat`
 - Swagger Docs: `http://localhost:8000/docs`
 
 ### Terminal 2: Start Frontend (Next.js on Port 3000)
@@ -28,6 +30,8 @@ npm run dev
 - History Dashboard: `http://localhost:3000/subjects/history`
 - Mathematics Dashboard: `http://localhost:3000/subjects/mathematics`
 - EVS Dashboard: `http://localhost:3000/subjects/evs`
+- Scoped Chapter Chat: `http://localhost:3000/chat/{chapterId}?persona={personaId}`
+- Scoped Subject Studio Chat: `http://localhost:3000/chat/subject/{subjectId}?persona={personaId}`
 
 ### Terminal 3: Verify Ollama Service
 ```powershell
@@ -43,33 +47,38 @@ ollama list
 ### 1. Ingestion Pipeline & Boundary Verification (Part 01)
 ```powershell
 cd C:\Users\spyte\Desktop\ChatBot_POC
-# Validate existing and newly generated chapter PDFs
 .\.venv\Scripts\python.exe -m scripts.textbooks.segment_textbook --validate-only
-# Re-run full ingestion and report generation
 .\.venv\Scripts\python.exe -m scripts.textbooks.run_textbook_ingestion
 ```
 
-### 2. Frontend Production Build Check (Part 02)
+### 2. Persona Schema & Profile Validation (Part 03)
+```powershell
+cd C:\Users\spyte\Desktop\ChatBot_POC
+.\.venv\Scripts\python.exe scripts/validate_personas.py
+```
+*Expected Result:* 24/24 personas valid, 72/72 examples valid, 0 errors.
+
+### 3. Persona Intelligence Evaluation Suite (Part 03)
+```powershell
+cd C:\Users\spyte\Desktop\ChatBot_POC
+.\.venv\Scripts\python.exe scripts/evaluate_personas.py
+```
+*Expected Result:* 120/120 test cases passed (100% PASS across all 5 evaluation dimensions).
+
+### 4. Frontend Production Build Check
 ```powershell
 cd C:\Users\spyte\Desktop\ChatBot_POC\frontend
 npx tsc --noEmit
 npm run build
 ```
-*Expected Result:* 0 errors, all 9 routes generated (`/`, `/subjects/[subjectId]`, `/subjects/[subjectId]/chapters/[chapterId]`, `/chat/[chapterId]`, `/chat/subject/[subjectId]`, `/subjects/history/story`).
+*Expected Result:* 0 TypeScript errors, all routes generated.
 
-### 3. History Interactive Prototype Evaluation Suite
+### 5. Existing Prototype & RAG Regression Suites
 ```powershell
 cd C:\Users\spyte\Desktop\ChatBot_POC
 .\.venv\Scripts\python.exe test_history_prototype.py
-```
-*Expected Result:* 14/14 tests passed (100% PASS against live Ollama).
-
-### 4. EVS RAG & Live Model Evaluation Suite
-```powershell
-cd C:\Users\spyte\Desktop\ChatBot_POC
 .\.venv\Scripts\python.exe test_poc.py
 ```
-*Expected Result:* 16/16 tests passed (100% PASS across deterministic routing and live model tests).
 
 ---
 

@@ -55,6 +55,10 @@ export interface ChatRequest {
   message: string;
   history: HistoryMessage[];
   mode?: string;
+  persona_id?: string;
+  subject_id?: string;
+  response_mode?: string;
+  question_format?: string;
 }
 
 export interface SourceReference {
@@ -68,6 +72,8 @@ export interface ChatResponse {
   sources: SourceReference[];
   mode: string;
   retrieved_count: number;
+  persona_id?: string;
+  suggested_choices?: string[];
 }
 
 export interface HealthResponse {
@@ -94,6 +100,10 @@ export interface UIMessage {
   mode?: string;
   timestamp: Date;
   isError?: boolean;
+  persona_id?: string;
+  persona_name?: string;
+  persona_avatar?: string;
+  suggested_choices?: string[];
 }
 
 // ── Interactive History Learning Types ───────────────────────────────────────

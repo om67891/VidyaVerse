@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#B45309" />
+      <stop offset="100%" stop-color="#78350F" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- Safari Expedition Hat & Fossil Explorer -->
+            <ellipse cx="100" cy="70" rx="36" ry="12" fill="#D97706" stroke="#92400E" stroke-width="1.5"/>
+            <rect x="78" y="52" width="44" height="20" rx="3" fill="#B45309"/>
+            <ellipse cx="100" cy="95" rx="25" ry="27" fill="#FDE68A"/>
+            <circle cx="91" cy="92" r="2.5" fill="#292524"/>
+            <circle cx="109" cy="92" r="2.5" fill="#292524"/>
+            <!-- Field Khaki Shirt -->
+            <path d="M68,126 C78,118 122,118 132,126 L145,185 L55,185 Z" fill="#D97706"/>
+            <!-- Homo Habilis Fossil Skull Specimen -->
+            <path d="M90,152 C90,140 110,140 110,152 C110,162 105,166 100,166 C95,166 90,162 90,152 Z" fill="#FEF3C7" stroke="#78350F" stroke-width="1.5"/>
+            <circle cx="96" cy="150" r="1.5" fill="#78350F"/>
+            <circle cx="104" cy="150" r="1.5" fill="#78350F"/>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Olduvai Paleontologist</text>
+  </g>
+</svg>

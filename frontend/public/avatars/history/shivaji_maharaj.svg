@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- Royal Maratha Turban (Pheta) with Jewel (Jijamata kalgi) -->
+            <path d="M60,80 Q100,35 140,80 Q150,105 130,115 Q100,120 70,115 Z" fill="#DC2626" stroke="#991B1B" stroke-width="2"/>
+            <path d="M95,35 L105,35 L102,15 L98,15 Z" fill="#FCD34D" stroke="#D97706" stroke-width="1.5"/>
+            <circle cx="100" cy="40" r="5" fill="#EF4444" stroke="#F59E0B" stroke-width="1.5"/>
+            <!-- Face Profile -->
+            <ellipse cx="100" cy="110" rx="30" ry="34" fill="#FDE68A"/>
+            <!-- Moustache & Royal Beard -->
+            <path d="M78,118 Q100,128 122,118 Q115,135 100,138 Q85,135 78,118 Z" fill="#1F2937"/>
+            <path d="M85,112 Q100,118 115,112 Q100,115 85,112 Z" fill="#111827"/>
+            <!-- Eyes & Tilak (Chandra-kor) -->
+            <path d="M96,86 A4,4 0 0,0 104,86" stroke="#B45309" stroke-width="2" fill="none"/>
+            <circle cx="90" cy="100" r="2.5" fill="#1F2937"/>
+            <circle cx="110" cy="100" r="2.5" fill="#1F2937"/>
+            <!-- Royal Armor & Pearl Necklace -->
+            <path d="M65,142 C75,132 125,132 135,142 L145,185 L55,185 Z" fill="#9A3412" stroke="#7C2D12" stroke-width="2"/>
+            <path d="M80,146 Q100,160 120,146" stroke="#FEF3C7" stroke-width="3" stroke-dasharray="2,4" fill="none"/>
+            <circle cx="100" cy="162" r="4" fill="#F59E0B"/>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Founder of Swaraj</text>
+  </g>
+</svg>

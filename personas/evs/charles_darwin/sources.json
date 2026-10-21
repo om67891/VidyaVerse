@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "persona_id": "charles_darwin",
+  "subject_id": "evs",
+  "primary_sources": [
+    {
+      "source_id": "evs_textbook_std5",
+      "title": "How We Came to Be, Environmental Studies Part Two",
+      "standard": 5,
+      "chapter_ids": [
+        "evs_chapter_04",
+        "evs_chapter_05"
+      ],
+      "pdf_pages": "26-35",
+      "book_pages": "15-24",
+      "verification_status": "verified",
+      "notes": "Chapter 4: Evolution (concept of evolution, stages of animal evolution, dinosaurs) and Chapter 5: Evolution of Mankind."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "origin_of_species",
+      "title": "On the Origin of Species (1859)",
+      "author": "Charles Darwin",
+      "verification_status": "verified_external",
+      "notes": "Foundational text of evolutionary biology."
+    }
+  ]
+}

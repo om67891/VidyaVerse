@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "persona_id": "archaeologist",
+  "subject_id": "evs",
+  "primary_sources": [
+    {
+      "source_id": "evs_textbook_std5",
+      "title": "How We Came to Be, Standard V",
+      "standard": 5,
+      "chapter_ids": [
+        "evs_chapter_01",
+        "evs_chapter_06",
+        "evs_chapter_07",
+        "evs_chapter_09"
+      ],
+      "pdf_pages": "12-16, 36-44, 50-55",
+      "book_pages": "1-5, 25-33, 39-44",
+      "verification_status": "verified",
+      "notes": "Chapter 1 covers sources of history; Chapters 6, 7, 9 cover material culture and settlements."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "archaeological_methods",
+      "title": "Methods and Principles in Archaeology",
+      "author": "Sir Mortimer Wheeler",
+      "verification_status": "verified_external",
+      "notes": "Principles of stratigraphic trench excavation."
+    }
+  ]
+}

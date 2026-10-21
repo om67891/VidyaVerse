@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "apollonius",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_02"
+      ],
+      "pdf_pages": "40-56",
+      "book_pages": "30-46",
+      "verification_status": "verified",
+      "notes": "Chapter 2 covers Apollonius Theorem statement, proof, and Practice Set 2.2."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "apollonius_conics",
+      "title": "Treatise on Conic Sections",
+      "author": "Apollonius of Perga",
+      "verification_status": "verified_external",
+      "notes": "Historical geometric foundations of Apollonian geometry."
+    }
+  ]
+}

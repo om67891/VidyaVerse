@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#78350F" />
+      <stop offset="100%" stop-color="#451A03" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- Flint Microlith Handaxe & Thatch Shelter -->
+            <!-- Stone Handaxe (Flint tool) -->
+            <polygon points="100,45 120,95 105,125 95,125 80,95" fill="#78716C" stroke="#44403C" stroke-width="2"/>
+            <line x1="100" y1="45" x2="100" y2="120" stroke="#A8A29E" stroke-width="1.5"/>
+            <!-- Primitive Thatch Shelter (Neolithic Hut) -->
+            <polygon points="100,135 135,175 65,175" fill="#B45309" stroke="#78350F" stroke-width="2"/>
+            <rect x="94" y="155" width="12" height="20" fill="#451A03"/>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Stone Tools & Settlement Guide</text>
+  </g>
+</svg>

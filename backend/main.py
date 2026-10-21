@@ -131,6 +131,16 @@ async def list_personas(subject_id: Optional[str] = None, chapter_id: Optional[s
     return get_personas(subject_id=subject_id, chapter_id=chapter_id)
 
 
+@app.get("/api/personas/{persona_id}")
+async def get_persona_details(persona_id: str):
+    """Return full persona profile, boundaries, and teaching behavior."""
+    from backend.services.persona_manager import get_persona_manager
+    p = get_persona_manager().get_persona(persona_id)
+    if not p:
+        raise HTTPException(status_code=404, detail=f"Persona '{persona_id}' not found.")
+    return p
+
+
 # ── Chat ───────────────────────────────────────────────────────────────────────
 
 
@@ -139,13 +149,18 @@ async def chat(request: ChatRequest):
     """Process a chat message and return an AI-generated response."""
     from backend.services.rag import process_chat
 
-    # Validate chapter exists
-    chapter = get_chapter(request.chapter_id.upper())
-    if chapter is None:
-        raise HTTPException(status_code=404, detail=f"Chapter not found: {request.chapter_id}")
+    # Check if chapter is standard chapter ID or subject-level chat
+    clean_chap = request.chapter_id.strip()
+    is_subject_chat = clean_chap.lower().endswith("_all") or clean_chap.lower() in ("subject", "all", "history", "mathematics", "evs")
 
-    # Normalise chapter_id to uppercase
-    request = request.model_copy(update={"chapter_id": request.chapter_id.upper()})
+    if not is_subject_chat:
+        chapter = get_chapter(clean_chap)
+        if chapter is None:
+            # Try upper case
+            chapter = get_chapter(clean_chap.upper())
+        if chapter is None:
+            raise HTTPException(status_code=404, detail=f"Chapter not found: {request.chapter_id}")
+        request = request.model_copy(update={"chapter_id": chapter.chapter_id})
 
     try:
         return process_chat(request)
@@ -155,6 +170,7 @@ async def chat(request: ChatRequest):
         raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal error: {e}")
+
 
 
 # ── Indexing ───────────────────────────────────────────────────────────────────

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- Head & Kind Expression -->
+            <ellipse cx="100" cy="95" rx="26" ry="29" fill="#FDE68A"/>
+            <path d="M82,78 Q100,70 118,78" fill="#E7E5E4" stroke="#A8A29E" stroke-width="1.5"/>
+            <!-- Eyes & Warm Smile -->
+            <circle cx="91" cy="93" r="2.5" fill="#451A03"/>
+            <circle cx="109" cy="93" r="2.5" fill="#451A03"/>
+            <path d="M92,106 Q100,113 108,106" stroke="#451A03" stroke-width="2" fill="none"/>
+            <!-- White Khadi Kurta -->
+            <path d="M68,125 C80,116 120,116 132,125 L145,185 L55,185 Z" fill="#F5F5F4" stroke="#D6D3D1" stroke-width="1.5"/>
+            <!-- Kalash (Water Vessel of Godavari) symbol of feeding thirsty animal -->
+            <ellipse cx="100" cy="155" rx="14" ry="10" fill="#D97706" stroke="#78350F" stroke-width="1.5"/>
+            <path d="M93,145 L107,145 L105,148 L95,148 Z" fill="#F59E0B"/>
+            <circle cx="100" cy="153" r="3" fill="#38BDF8"/>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Compassion & Service Guide</text>
+  </g>
+</svg>

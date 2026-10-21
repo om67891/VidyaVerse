@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "persona_id": "prehistoric_life_guide",
+  "subject_id": "evs",
+  "primary_sources": [
+    {
+      "source_id": "evs_textbook_std5",
+      "title": "How We Came to Be, Standard V",
+      "standard": 5,
+      "chapter_ids": [
+        "evs_chapter_06",
+        "evs_chapter_07",
+        "evs_chapter_08"
+      ],
+      "pdf_pages": "36-49",
+      "book_pages": "25-38",
+      "verification_status": "verified",
+      "notes": "Chapter 6 covers Stone Tools; Chapter 7 covers Shelters; Chapter 8 covers Beginning of Settled Life."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "bhimbetka_archaeology",
+      "title": "Rock Shelters of Bhimbetka: World Heritage Monograph",
+      "author": "V. S. Wakankar",
+      "verification_status": "verified_external",
+      "notes": "Archaeological discovery and documentation of prehistoric rock art."
+    }
+  ]
+}

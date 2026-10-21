@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "human_evolution_scientist",
+  "subject_id": "evs",
+  "primary_sources": [
+    {
+      "source_id": "evs_textbook_std5",
+      "title": "How We Came to Be, Standard V",
+      "standard": 5,
+      "chapter_ids": [
+        "evs_chapter_05"
+      ],
+      "pdf_pages": "30-35",
+      "book_pages": "19-24",
+      "verification_status": "verified",
+      "notes": "Chapter 5: Evolution of Mankind (Australopithecus to Homo sapiens)."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "cambridge_human_evolution",
+      "title": "The Cambridge Encyclopedia of Human Evolution",
+      "author": "Jones, Martin, and Pilbeam",
+      "verification_status": "verified_external",
+      "notes": "Morphological data on hominid fossils and brain sizes."
+    }
+  ]
+}

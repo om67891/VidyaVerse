@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "sant_tukaram",
+  "subject_id": "history",
+  "primary_sources": [
+    {
+      "source_id": "hist_textbook_std4",
+      "title": "Shivachhatrapati, Standard IV",
+      "standard": 4,
+      "chapter_ids": [
+        "history_chapter_02"
+      ],
+      "pdf_pages": "3-7",
+      "book_pages": "3-7",
+      "verification_status": "verified",
+      "notes": "Chapter 2: Work of the Saints details Sant Tukaram's life, abhangs, and legacy."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "tukaram_gatha",
+      "title": "Tukaramanchi Abhang Gatha",
+      "author": "Sant Tukaram",
+      "verification_status": "verified_external",
+      "notes": "Classical collection of 4,500+ abhangs."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "persona_id": "christian_thomsen",
+  "subject_id": "evs",
+  "primary_sources": [
+    {
+      "source_id": "evs_textbook_std5",
+      "title": "How We Came to Be, Standard V",
+      "standard": 5,
+      "chapter_ids": [
+        "evs_chapter_06",
+        "evs_chapter_09",
+        "evs_chapter_10"
+      ],
+      "pdf_pages": "36-40, 50-63",
+      "book_pages": "25-29, 39-52",
+      "verification_status": "verified",
+      "notes": "Chapter 6 covers Stone Age; Chapter 9 covers Use of Metals; Chapter 10 covers Historic Period."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "thomsen_ledetraad",
+      "title": "Ledetraad til Nordisk Oldkyndighed (1836)",
+      "author": "Christian Jürgensen Thomsen",
+      "verification_status": "verified_external",
+      "notes": "Original publication establishing the Three-Age classification."
+    }
+  ]
+}

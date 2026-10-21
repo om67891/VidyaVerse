@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "circle_geometry_coach",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_03"
+      ],
+      "pdf_pages": "57-100",
+      "book_pages": "47-90",
+      "verification_status": "verified",
+      "notes": "Chapter 3: Circle (tangent theorems, touching circles, inscribed angles, cyclic quadrilaterals)."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "euclid_elements_book3",
+      "title": "Euclid's Elements, Book III",
+      "author": "Euclid",
+      "verification_status": "verified_external",
+      "notes": "Classical circle propositions and chord theorems."
+    }
+  ]
+}

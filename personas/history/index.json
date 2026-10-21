@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "subject_id": "history",
+  "total_personas": 8,
+  "personas": [
+    {
+      "persona_id": "shivaji_maharaj",
+      "display_name": "Chhatrapati Shivaji Maharaj",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "Strategic, responsible leader guiding students through Swaraj, forts, battles, and public welfare.",
+      "avatar_path": "/avatars/history/shivaji_maharaj.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_01",
+        "history_chapter_02",
+        "history_chapter_03",
+        "history_chapter_04",
+        "history_chapter_05",
+        "history_chapter_06",
+        "history_chapter_07",
+        "history_chapter_08",
+        "history_chapter_09",
+        "history_chapter_10",
+        "history_chapter_11",
+        "history_chapter_12",
+        "history_chapter_13",
+        "history_chapter_14",
+        "history_chapter_15",
+        "history_chapter_16",
+        "history_chapter_17",
+        "history_chapter_18"
+      ],
+      "expertise_topics": [
+        "Establishment of Swaraj",
+        "Shivaji's Childhood and Education",
+        "The Oath of Swaraj at Raireshwar",
+        "Capture of Forts: Torna, Kondhana, Purandar",
+        "Battle of Pratapgad and Afzalkhan",
+        "Battle of Ghodkhind",
+        "Shaistakhan at Lal Mahal",
+        "Escape from Agra",
+        "Coronation at Raigad",
+        "Navy and Fort Architecture",
+        "Ashta Pradhan Mandal and Welfare State"
+      ],
+      "profile_path": "personas/history/shivaji_maharaj/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "sant_dnyaneshwar",
+      "display_name": "Sant Dnyaneshwar",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "Gentle, reflective 13th-century saint and philosopher who composed the Dnyaneshwari in Marathi for ordinary people.",
+      "avatar_path": "/avatars/history/sant_dnyaneshwar.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_02"
+      ],
+      "expertise_topics": [
+        "Bhakti Movement in Maharashtra",
+        "Composition of the Dnyaneshwari (Bhavartha Dipika)",
+        "Universal equality and brotherhood (Pasaydan)",
+        "Life at Alandi and Nevasa",
+        "Sanskrit to Marathi translation of the Gita"
+      ],
+      "profile_path": "personas/history/sant_dnyaneshwar/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "sant_namdeo",
+      "display_name": "Sant Namdeo",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "Devotional poet-saint who traveled across India spreading community kirtan, equality, and love for Vitthal.",
+      "avatar_path": "/avatars/history/sant_namdeo.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_02"
+      ],
+      "expertise_topics": [
+        "Bhakti kirtan tradition",
+        "Poetry and Abhang composition",
+        "Travels across India (Punjab, Ghuman)",
+        "Equality of all devotees before Vitthal",
+        "Guru Granth Sahib verses"
+      ],
+      "profile_path": "personas/history/sant_namdeo/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "sant_ekanath",
+      "display_name": "Sant Eknath",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "16th-century saint of Paithan who practiced active compassion, service to the marginalized, and composed lively Bharuds.",
+      "avatar_path": "/avatars/history/sant_ekanath.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_02"
+      ],
+      "expertise_topics": [
+        "Compassion and practical service",
+        "Composing Bharuds and Abhangs",
+        "Eknathi Bhagavata",
+        "Rejection of untouchability and caste pride",
+        "Preservation of Dnyaneshwari manuscript"
+      ],
+      "profile_path": "personas/history/sant_ekanath/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "sant_tukaram",
+      "display_name": "Sant Tukaram",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "17th-century people's poet of Dehu who composed immortal Abhangs praising truth, forgiveness, and equality.",
+      "avatar_path": "/avatars/history/sant_tukaram.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_02"
+      ],
+      "expertise_topics": [
+        "Abhang poetry and Varkari movement",
+        "Life at Dehu and Bhandara hill",
+        "Forgiveness and social justice",
+        "Rejection of hypocrisy",
+        "Influence on 17th-century Maharashtra"
+      ],
+      "profile_path": "personas/history/sant_tukaram/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "samarth_ramdas",
+      "display_name": "Samarth Ramdas",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "Energetic 17th-century guide who inspired physical fitness, disciplined action, unity, and composed the Dasbodh.",
+      "avatar_path": "/avatars/history/samarth_ramdas.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_02"
+      ],
+      "expertise_topics": [
+        "Physical fitness and Akharas (gymnasiums)",
+        "Dasbodh and Manache Shlok",
+        "Devotion to Hanuman (strength and service)",
+        "Awakening self-reliance in youth",
+        "Discipline and organization"
+      ],
+      "profile_path": "personas/history/samarth_ramdas/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "baji_prabhu_deshpande",
+      "display_name": "Baji Prabhu Deshpande",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "Fierce, loyal Maratha commander who held the narrow pass of Ghodkhind with 300 brave soldiers against Siddi Jauhar's army.",
+      "avatar_path": "/avatars/history/baji_prabhu_deshpande.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_10"
+      ],
+      "expertise_topics": [
+        "Battle of Ghodkhind (Pavan Khind)",
+        "Escape from Panhala to Vishalgad",
+        "Guerrilla warfare in mountain passes (Khind)",
+        "Loyalty, duty, and tactical defense under overwhelming odds"
+      ],
+      "profile_path": "personas/history/baji_prabhu_deshpande/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "moro_trimbak_pingle",
+      "display_name": "Moro Trimbak Pingle",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "grade_scope": {
+        "minimum": 4,
+        "maximum": 8
+      },
+      "short_description": "First Peshwa (Prime Minister) of Swaraj, master architect of administrative systems, public finance, and fort maintenance.",
+      "avatar_path": "/avatars/history/moro_trimbak_pingle.svg",
+      "relevant_chapter_ids": [
+        "history_chapter_15",
+        "history_chapter_17",
+        "history_chapter_18"
+      ],
+      "expertise_topics": [
+        "Ashta Pradhan Mandal (Council of Eight Ministers)",
+        "Civil and revenue administration",
+        "Fort repair, granaries, and water storage",
+        "Royal seals and official governance",
+        "Welfare state of Swaraj"
+      ],
+      "profile_path": "personas/history/moro_trimbak_pingle/profile.json",
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#065F46" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- 3D Solid Shapes: Cylinder & Cone -->
+            <!-- Cylinder -->
+            <ellipse cx="85" cy="80" rx="18" ry="7" fill="#6EE7B7" stroke="#047857" stroke-width="1.5"/>
+            <rect x="67" y="80" width="36" height="35" fill="#34D399" stroke="#047857" stroke-width="1.5"/>
+            <ellipse cx="85" cy="115" rx="18" ry="7" fill="#10B981" stroke="#047857" stroke-width="1.5"/>
+            <!-- Sphere -->
+            <circle cx="125" cy="100" r="18" fill="#10B981" stroke="#047857" stroke-width="1.5"/>
+            <ellipse cx="125" cy="100" rx="18" ry="6" fill="none" stroke="#A7F3D0" stroke-width="1" stroke-dasharray="2,2"/>
+            <!-- Volume Formula Badge -->
+            <rect x="70" y="148" width="60" height="20" rx="3" fill="#064E3B" stroke="#6EE7B7" stroke-width="1"/>
+            <text x="100" y="162" font-family="sans-serif" font-size="11" font-weight="bold" fill="#FFFFFF" text-anchor="middle">πr²h</text>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Area & Volume Studio Guide</text>
+  </g>
+</svg>

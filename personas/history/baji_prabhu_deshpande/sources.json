@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "baji_prabhu_deshpande",
+  "subject_id": "history",
+  "primary_sources": [
+    {
+      "source_id": "hist_textbook_std4",
+      "title": "Shivachhatrapati, Standard IV",
+      "standard": 4,
+      "chapter_ids": [
+        "history_chapter_10"
+      ],
+      "pdf_pages": "38-41",
+      "book_pages": "38-41",
+      "verification_status": "verified",
+      "notes": "Chapter 10: Baji Prabhu and the Memorable Battle of Ghodkhind."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "jedhe_shakavali",
+      "title": "Jedhe Shakavali & Jedhe Karina",
+      "author": "Jedhe Family Records",
+      "verification_status": "verified_external",
+      "notes": "Contemporary 17th-century chronological record of the Panhala campaign and Ghodkhind."
+    }
+  ]
+}

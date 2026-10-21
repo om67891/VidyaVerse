@@ -9,6 +9,7 @@ interface AvatarProps {
   name: string;
   role: string;
   persona: string;
+  subjectId?: string;
   size?: "sm" | "md" | "lg";
 }
 
@@ -17,12 +18,21 @@ export function PersonaAvatar({
   name,
   role,
   persona,
+  subjectId,
   size = "md",
 }: AvatarProps) {
   const [imageError, setImageError] = useState(false);
 
   const dimension = size === "lg" ? 84 : size === "md" ? 64 : 48;
-  const isShivaji = persona === "SHIVAJI";
+  const isShivaji = persona === "SHIVAJI" || persona === "shivaji_maharaj";
+
+  // Determine theme by subject or persona name
+  const sub = (subjectId || (src.includes("mathematics") ? "mathematics" : src.includes("evs") ? "evs" : "history")).toLowerCase();
+  const theme = sub.includes("math")
+    ? { border: "#2563EB", bg: "#EFF6FF", text: "#1D4ED8", badge: "📐", label: "Math" }
+    : sub.includes("evs")
+    ? { border: "#059669", bg: "#ECFDF5", text: "#047857", badge: "🌿", label: "EVS" }
+    : { border: "#D97706", bg: "#FFFBEB", text: "#B45309", badge: isShivaji ? "👑" : "📜", label: "History" };
 
   return (
     <div className="flex items-center gap-3.5">
@@ -31,10 +41,10 @@ export function PersonaAvatar({
         style={{
           width: `${dimension}px`,
           height: `${dimension}px`,
-          borderColor: isShivaji ? "#D97706" : "#4F46E5",
+          borderColor: theme.border,
         }}
       >
-        {!imageError ? (
+        {!imageError && src ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={src}
@@ -44,14 +54,11 @@ export function PersonaAvatar({
             loading="eager"
           />
         ) : (
-          // Graceful fallback if asset is missing or fails to load
           <div
-            className="w-full h-full flex flex-col items-center justify-center text-center p-1.5"
+            className="w-full h-full flex flex-col items-center justify-center text-center p-1.5 rounded-full"
             style={{
-              background: isShivaji
-                ? "linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%)"
-                : "linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%)",
-              color: isShivaji ? "#92400E" : "#3730A3",
+              background: `linear-gradient(135deg, ${theme.bg} 0%, white 100%)`,
+              color: theme.text,
             }}
           >
             {isShivaji ? (
@@ -59,8 +66,8 @@ export function PersonaAvatar({
             ) : (
               <Award className="w-6 h-6 stroke-[2.2]" />
             )}
-            <span className="text-[9px] font-bold tracking-tight uppercase mt-0.5">
-              {isShivaji ? "Shivaji" : "Tutor"}
+            <span className="text-[9px] font-bold tracking-tight uppercase mt-0.5 truncate max-w-full px-1">
+              {name.split(" ")[0]}
             </span>
           </div>
         )}
@@ -69,11 +76,11 @@ export function PersonaAvatar({
         <div
           className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] shadow"
           style={{
-            background: isShivaji ? "#D97706" : "#4F46E5",
+            background: theme.border,
           }}
-          title={isShivaji ? "First-Person Roleplay" : "Educational Guide"}
+          title={isShivaji ? "First-Person Roleplay" : `${theme.label} Guide`}
         >
-          {isShivaji ? "👑" : "📚"}
+          {theme.badge}
         </div>
       </div>
 
@@ -95,6 +102,69 @@ export function PersonaAvatar({
           {role}
         </p>
       </div>
+    </div>
+  );
+}
+
+export function SinglePersonaAvatar({
+  src,
+  name,
+  subjectId,
+  size = 36,
+}: {
+  src?: string;
+  name?: string;
+  subjectId?: string;
+  size?: number;
+}) {
+  const [error, setError] = useState(false);
+  const sub = (subjectId || (src?.includes("mathematics") ? "mathematics" : src?.includes("evs") ? "evs" : "history")).toLowerCase();
+  const theme = sub.includes("math")
+    ? { border: "#2563EB", bg: "#EFF6FF", icon: "📐" }
+    : sub.includes("evs")
+    ? { border: "#059669", bg: "#ECFDF5", icon: "🌿" }
+    : { border: "#D97706", bg: "#FFFBEB", icon: "📜" };
+
+  if (src && !error) {
+    return (
+      <div
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          borderRadius: "10px",
+          overflow: "hidden",
+          border: `1.5px solid ${theme.border}`,
+          flexShrink: 0,
+          background: theme.bg,
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt={name || "Persona Avatar"}
+          onError={() => setError(true)}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        width: `${size}px`,
+        height: `${size}px`,
+        borderRadius: "10px",
+        border: `1.5px solid ${theme.border}`,
+        background: theme.bg,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: `${Math.round(size * 0.45)}px`,
+        flexShrink: 0,
+      }}
+    >
+      {theme.icon}
     </div>
   );
 }

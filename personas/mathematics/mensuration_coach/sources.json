@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "mensuration_coach",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_07"
+      ],
+      "pdf_pages": "150-173",
+      "book_pages": "140-163",
+      "verification_status": "verified",
+      "notes": "Chapter 7: Mensuration (3D solids, frustum, sector and segment of circle)."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "archimedes_sphere_cylinder",
+      "title": "On the Sphere and Cylinder",
+      "author": "Archimedes",
+      "verification_status": "verified_external",
+      "notes": "Classical geometric derivations of sphere and cylinder volumes."
+    }
+  ]
+}

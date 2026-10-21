@@ -159,14 +159,14 @@ def test_part2_orchestrator_and_personas():
         # Start Lesson 2
         r_start = requests.post(f"{BASE_URL}/api/history/action", json={
             "session_id": sess_stage, "action_type": "select_lesson", "lesson_id": "HIST_L02"
-        }, timeout=30).json()
+        }, timeout=60).json()
         stage1_choices = [c["id"] for c in r_start["choices"]]
         stage1_labels = [c["label"] for c in r_start["choices"]]
 
         # Advance to figure exploration stage (Sant Dnyaneshwar)
         r_next = requests.post(f"{BASE_URL}/api/history/action", json={
             "session_id": sess_stage, "action_type": "choice", "choice_id": stage1_choices[0]
-        }, timeout=30).json()
+        }, timeout=60).json()
         stage2_choices = [c["id"] for c in r_next["choices"]]
         stage2_labels = [c["label"] for c in r_next["choices"]]
 

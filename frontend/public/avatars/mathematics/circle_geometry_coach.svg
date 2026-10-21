@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0D9488" />
+      <stop offset="100%" stop-color="#115E59" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- Geometric Circle with Tangent and Radius -->
+            <circle cx="100" cy="95" r="45" fill="#134E4A" stroke="#5EEAD4" stroke-width="2.5"/>
+            <!-- Center Point & Radius Line -->
+            <circle cx="100" cy="95" r="3.5" fill="#FDE047"/>
+            <line x1="100" y1="95" x2="132" y2="127" stroke="#FDE047" stroke-width="2"/>
+            <!-- Tangent Line at Contact Point -->
+            <line x1="90" y1="165" x2="165" y2="90" stroke="#F43F5E" stroke-width="2.5"/>
+            <!-- Chord Line -->
+            <line x1="60" y1="115" x2="125" y2="60" stroke="#A7F3D0" stroke-width="2"/>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Tangents & Chords Specialist</text>
+  </g>
+</svg>

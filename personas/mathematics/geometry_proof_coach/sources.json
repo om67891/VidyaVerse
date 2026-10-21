@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "geometry_proof_coach",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_04"
+      ],
+      "pdf_pages": "101-109",
+      "book_pages": "91-99",
+      "verification_status": "verified",
+      "notes": "Chapter 4: Geometric Constructions, tangent drawing, similar triangle constructions."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "euclidean_constructions",
+      "title": "Euclidean Compass and Straightedge Constructions",
+      "author": "Euclid",
+      "verification_status": "verified_external",
+      "notes": "Foundational geometric construction axioms."
+    }
+  ]
+}

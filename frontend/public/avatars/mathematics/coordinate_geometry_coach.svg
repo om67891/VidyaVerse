@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- Cartesian Grid Plane -->
+            <rect x="55" y="55" width="90" height="90" fill="#0F172A" rx="4" stroke="#64748B" stroke-width="1.5"/>
+            <line x1="55" y1="100" x2="145" y2="100" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="100" y1="55" x2="100" y2="145" stroke="#94A3B8" stroke-width="2"/>
+            <!-- Plotted Points and Linear Vector -->
+            <line x1="70" y1="130" x2="130" y2="70" stroke="#38BDF8" stroke-width="2.5"/>
+            <circle cx="70" cy="130" r="4" fill="#F43F5E" stroke="#FFFFFF" stroke-width="1"/>
+            <circle cx="130" cy="70" r="4" fill="#10B981" stroke="#FFFFFF" stroke-width="1"/>
+            <text x="100" y="168" font-family="monospace" font-size="10" fill="#94A3B8" text-anchor="middle">(x₂, y₂)</text>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Grid & Slope Specialist</text>
+  </g>
+</svg>

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "coordinate_geometry_coach",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_05"
+      ],
+      "pdf_pages": "110-133",
+      "book_pages": "100-123",
+      "verification_status": "verified",
+      "notes": "Chapter 5: Co-ordinate Geometry (distance formula, section formula, midpoint, centroid, slope)."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "descartes_geometrie",
+      "title": "La Géométrie",
+      "author": "René Descartes (1637)",
+      "verification_status": "verified_external",
+      "notes": "Historical foundation of Cartesian coordinate geometry."
+    }
+  ]
+}

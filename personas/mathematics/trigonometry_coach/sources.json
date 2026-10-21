@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "trigonometry_coach",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_06"
+      ],
+      "pdf_pages": "134-149",
+      "book_pages": "124-139",
+      "verification_status": "verified",
+      "notes": "Chapter 6: Trigonometry (ratios, identities, standard values, heights and distances)."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "hipparchus_trigonometry",
+      "title": "Origins of Trigonometric Chords",
+      "author": "Hipparchus & Aryabhata",
+      "verification_status": "verified_external",
+      "notes": "Historical development of chord and sine tables."
+    }
+  ]
+}

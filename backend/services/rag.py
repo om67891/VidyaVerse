@@ -536,6 +536,152 @@ def route_intent(
     return "chapter_question", passages, effective_query, flags
 
 
+def detect_question_format(query: str) -> str:
+    """Classify user query into format directive per Part 03 specification."""
+    clean = query.strip().lower()
+    if re.search(r"^\s*(who\s+was|who\s+is|who\s+were|who\s+are|tell\s+me\s+about\s+(sant|chhatrapati|king|queen|scientist|darwin|pythagoras|baji|apollonius|linnaeus|leakey|thomsen))\b", clean):
+        return "who"
+    if re.search(r"^\s*(why\s+did|why\s+is|why\s+was|why\s+do|why\s+are|what\s+caused|reasons?\s+for)\b", clean):
+        return "why"
+    if re.search(r"^\s*(how\s+did|how\s+do|how\s+to|how\s+can|steps?\s+to|procedure|method\s+to)\b", clean):
+        return "how"
+    if re.search(r"^\s*(when\s+did|when\s+was|timeline|which\s+year|dates?\s+of)\b", clean):
+        return "when"
+    if re.search(r"\b(compare|difference\s+between|distinguish|versus|\bvs\b|similarity\s+and\s+difference)\b", clean):
+        return "compare"
+    if re.search(r"\b(solve|calculate|find\s+the\s+value|proof|prove\s+that|area\s+of|volume\s+of|hypotenuse|ratio)\b", clean):
+        return "solve"
+    if re.search(r"\b(tell\s+me\s+a\s+story|narrate|story\s+of|tale\s+of|legend\s+of)\b", clean):
+        return "story"
+    if re.search(r"\b(quiz\s+me|ask\s+me\s+a\s+question|test\s+my\s+knowledge|give\s+me\s+a\s+quiz)\b", clean):
+        return "quiz"
+    if re.search(r"\b(summarise|summarize|summary|recap|key\s+takeaways|in\s+short)\b", clean):
+        return "summarise"
+    if re.search(r"\b(explain\s+simply|in\s+simple\s+words|simple\s+terms|like\s+i'm\s+5|child\s+friendly)\b", clean):
+        return "explain_simply"
+    if re.search(r"^\s*(what\s+is|what\s+are|what\s+was|define|meaning\s+of)\b", clean):
+        return "what"
+    return "general_chat"
+
+
+def generate_suggested_choices(
+    persona: Optional[dict],
+    chapter_name: str,
+    question_format: str,
+    mode: str,
+) -> list[str]:
+    """Generate 3-4 context-aware educational next-step options suited to the persona and lesson scope."""
+    if not persona:
+        return [
+            f"Explain {chapter_name} more simply",
+            "Give me a key example",
+            "Quiz me on this concept",
+            "Ask a custom question",
+        ]
+
+    p_id = persona.get("persona_id", "")
+    subj = persona.get("subject_id", "").lower()
+    topics = persona.get("expertise_topics", [])
+    topic_hint = topics[0] if topics else chapter_name
+
+    if subj == "history":
+        if p_id == "shivaji_maharaj":
+            return [
+                "Explain the strategic decision behind this",
+                "What was the consequence for Swaraj?",
+                "Test my knowledge with a quick question",
+                "Ask a custom question",
+            ]
+        elif "sant" in p_id or p_id == "samarth_ramdas":
+            return [
+                "What is the deeper message for our daily lives?",
+                "How does this connect to the Bhakti movement?",
+                "Give me a reflection question",
+                "Ask a custom question",
+            ]
+        elif p_id == "baji_prabhu_deshpande":
+            return [
+                "Walk through the timeline of Ghodkhind",
+                "Why was this defense vital for Shivaji Maharaj?",
+                "Quiz me on the Battle of Ghodkhind",
+                "Ask a custom question",
+            ]
+        elif p_id == "moro_trimbak_pingle":
+            return [
+                "How were ministerial duties divided in Swaraj?",
+                "How did revenue administration help the people?",
+                "Check my understanding with a question",
+                "Ask a custom question",
+            ]
+
+    if subj == "mathematics":
+        if p_id == "pythagoras":
+            return [
+                "Show me a step-by-step worked example",
+                "How is this proven geometrically?",
+                "Give me a right-triangle problem to solve",
+                "Ask a custom question",
+            ]
+        elif p_id == "apollonius":
+            return [
+                "Show the proof using medians",
+                "How do we apply this in a triangle problem?",
+                "Check my understanding with a problem",
+                "Ask a custom question",
+            ]
+        else:
+            return [
+                f"Show a step-by-step worked solution for {topic_hint}",
+                "Give me a practice problem to test my skills",
+                "Explain the core theorem more simply",
+                "Ask a custom question",
+            ]
+
+    if subj == "evs":
+        if p_id == "charles_darwin":
+            return [
+                "What evidence supported this observation?",
+                "How did natural selection shape this trait?",
+                "Quiz me on evolution and adaptation",
+                "Ask a custom question",
+            ]
+        elif p_id == "carl_linnaeus":
+            return [
+                "How do we classify these organisms into categories?",
+                "What are the distinct characteristics used?",
+                "Give me an organism to classify",
+                "Ask a custom question",
+            ]
+        elif p_id == "archaeologist":
+            return [
+                "What physical artifacts were discovered here?",
+                "How do archaeologists interpret this evidence?",
+                "What remains uncertain about this site?",
+                "Ask a custom question",
+            ]
+        elif p_id == "human_evolution_scientist":
+            return [
+                "Walk through the timeline of early human species",
+                "What do skull fossils tell us about brain size?",
+                "Test my knowledge with an evolution quiz",
+                "Ask a custom question",
+            ]
+        else:
+            return [
+                f"What evidence is available for {topic_hint}?",
+                "How was life different during that period?",
+                "Quiz me on this concept",
+                "Ask a custom question",
+            ]
+
+    return [
+        f"Explain {topic_hint} in simpler terms",
+        "Give me a concrete real-world example",
+        "Check my understanding with a question",
+        "Ask a custom question",
+    ]
+
+
 # ── Structured Chat Message Building ───────────────────────────────────────────
 
 
@@ -546,17 +692,48 @@ def build_chat_messages(
     history: list[HistoryMessage],
     chapter_name: str,
     flags: dict,
+    persona_id: Optional[str] = None,
+    subject_name: Optional[str] = None,
+    question_format: Optional[str] = None,
+    response_mode: Optional[str] = None,
 ) -> list[dict]:
     """
     Build structured messages for Ollama's /api/chat endpoint.
     Strictly separates system instructions, bounded conversation history, and current request.
     Maintains the original user message as the generation instruction.
+    When persona_id is provided, dynamically constructs tailored persona instructions.
     """
     recent_history = history[-4:] if history else []
     history_messages = [
         {"role": m.role, "content": m.content}
         for m in recent_history
     ]
+
+    # Persona dynamic prompt construction
+    if persona_id:
+        from backend.services.persona_manager import get_persona_manager
+        pm = get_persona_manager()
+        persona = pm.get_persona(persona_id)
+        if persona:
+            context_parts = [
+                f"[Page {p['page_number']}]\n{p['text']}"
+                for p in passages
+            ]
+            context_str = "\n\n".join(context_parts) if context_parts else ""
+            res_mode = response_mode or ("imaginative" if flags.get("is_chapter_roleplay") or flags.get("is_roleplay") else ("documented" if passages else "persona_inspired"))
+            system_content = pm.build_system_prompt(
+                persona_id=persona_id,
+                subject_name=subject_name or persona.get("subject_id", "General"),
+                chapter_name=chapter_name,
+                context_str=context_str,
+                response_mode=res_mode,
+                question_format=question_format,
+            )
+            return [
+                {"role": "system", "content": system_content},
+                *history_messages,
+                {"role": "user", "content": query},
+            ]
 
     # --- Mode: general_chat ---
     if mode == "general_chat":
@@ -864,27 +1041,42 @@ def filter_supporting_sources(
 
 def process_chat(request: ChatRequest) -> ChatResponse:
     """
-    Main entry point: route intent, retrieve passages if needed, generate answer.
+    Main entry point: route intent, retrieve passages if needed, generate answer with persona support.
     """
     from backend.services.catalog import get_chapter
+    from backend.services.persona_manager import get_persona_manager
 
-    chapter = get_chapter(request.chapter_id)
-    if chapter is None:
-        raise ValueError(f"Unknown chapter_id: {request.chapter_id}")
+    clean_chap = request.chapter_id.strip()
+    is_subject_chat = clean_chap.lower().endswith("_all") or clean_chap.lower() in ("subject", "all", "history", "mathematics", "evs")
 
-    chapter_name = chapter.title
+    chapter = None
+    if not is_subject_chat:
+        chapter = get_chapter(clean_chap)
+        if chapter is None:
+            chapter = get_chapter(clean_chap.upper())
+        if chapter is None:
+            raise ValueError(f"Unknown chapter_id: {request.chapter_id}")
+
+    chapter_name = chapter.title if chapter else f"{request.subject_id or clean_chap} Curriculum"
+    subject_name = chapter.subject_id if chapter else (request.subject_id or "VidyaVerse")
 
     # 1. Intelligent intent routing
-    mode, passages, effective_query, flags = route_intent(
-        message=request.message,
-        history=request.history,
-        chapter_id=request.chapter_id,
-        chapter_title=chapter_name,
-        requested_mode=request.mode,
-    )
+    if is_subject_chat:
+        mode = "general_knowledge" if request.mode != "study" else "chapter_question"
+        passages = []
+        effective_query = request.message
+        flags = {}
+    else:
+        mode, passages, effective_query, flags = route_intent(
+            message=request.message,
+            history=request.history,
+            chapter_id=chapter.chapter_id,
+            chapter_title=chapter_name,
+            requested_mode=request.mode,
+        )
 
     # 2. Check indexing if chapter_question
-    if mode in ("chapter_question", "chapter_plus_general") and not chapter.indexed:
+    if chapter and mode in ("chapter_question", "chapter_plus_general") and not chapter.indexed:
         return ChatResponse(
             answer=(
                 f"The chapter '{chapter_name}' has not been indexed yet. "
@@ -893,7 +1085,16 @@ def process_chat(request: ChatRequest) -> ChatResponse:
             sources=[],
             mode=mode,
             retrieved_count=0,
+            persona_id=request.persona_id,
+            suggested_choices=[],
         )
+
+    # Detect question format
+    q_format = request.question_format or detect_question_format(request.message)
+
+    # Resolve persona
+    pm = get_persona_manager()
+    persona = pm.get_persona(request.persona_id) if request.persona_id else None
 
     # 3. Build structured chat messages (preserving original message for generation)
     messages = build_chat_messages(
@@ -903,6 +1104,10 @@ def process_chat(request: ChatRequest) -> ChatResponse:
         history=request.history,
         chapter_name=chapter_name,
         flags=flags,
+        persona_id=request.persona_id,
+        subject_name=subject_name,
+        question_format=q_format,
+        response_mode=request.response_mode,
     )
 
     # 4. Generate answer with Ollama
@@ -911,11 +1116,16 @@ def process_chat(request: ChatRequest) -> ChatResponse:
     # 5. Filter supporting source citations
     sources = filter_supporting_sources(passages, mode, flags)
 
+    # 6. Suggested choices
+    suggested_choices = generate_suggested_choices(persona, chapter_name, q_format, mode)
+
     return ChatResponse(
         answer=answer,
         sources=sources,
         mode=mode,
         retrieved_count=len(passages),
+        persona_id=persona.get("persona_id") if persona else request.persona_id,
+        suggested_choices=suggested_choices,
     )
 
 

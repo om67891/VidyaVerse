@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "sant_ekanath",
+  "subject_id": "history",
+  "primary_sources": [
+    {
+      "source_id": "hist_textbook_std4",
+      "title": "Shivachhatrapati, Standard IV",
+      "standard": 4,
+      "chapter_ids": [
+        "history_chapter_02"
+      ],
+      "pdf_pages": "3-7",
+      "book_pages": "3-7",
+      "verification_status": "verified",
+      "notes": "Chapter 2: Work of the Saints details Sant Eknath's life at Paithan."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "eknathi_bhagavata",
+      "title": "Eknathi Bhagavata & Bharuds",
+      "author": "Sant Eknath",
+      "verification_status": "verified_external",
+      "notes": "Classical 16th-century Marathi literature."
+    }
+  ]
+}

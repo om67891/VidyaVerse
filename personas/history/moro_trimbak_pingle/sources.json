@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "persona_id": "moro_trimbak_pingle",
+  "subject_id": "history",
+  "primary_sources": [
+    {
+      "source_id": "hist_textbook_std4",
+      "title": "Shivachhatrapati, Standard IV",
+      "standard": 4,
+      "chapter_ids": [
+        "history_chapter_15",
+        "history_chapter_17",
+        "history_chapter_18"
+      ],
+      "pdf_pages": "57-71",
+      "book_pages": "57-71",
+      "verification_status": "verified",
+      "notes": "Chapters 15, 17, and 18 cover Coronation, Forts & Navy, and the Welfare State of Swaraj."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "ajnyapatra_statecraft",
+      "title": "Ajnyapatra (Royal Edicts on Statecraft)",
+      "author": "Ramchandra Pant Amatya",
+      "verification_status": "verified_external",
+      "notes": "17th-century authoritative manual on Maratha administration and fort defense."
+    }
+  ]
+}

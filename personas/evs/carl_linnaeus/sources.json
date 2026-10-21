@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "persona_id": "carl_linnaeus",
+  "subject_id": "evs",
+  "primary_sources": [
+    {
+      "source_id": "evs_textbook_std5",
+      "title": "How We Came to Be, Standard V",
+      "standard": 5,
+      "chapter_ids": [
+        "evs_chapter_03",
+        "evs_chapter_04"
+      ],
+      "pdf_pages": "23-29",
+      "book_pages": "12-18",
+      "verification_status": "verified",
+      "notes": "Chapter 3: Life on Earth and Chapter 4: Evolution (classification of animal kingdom)."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "systema_naturae",
+      "title": "Systema Naturae (10th Edition, 1758)",
+      "author": "Carl Linnaeus",
+      "verification_status": "verified_external",
+      "notes": "Foundational text of binomial nomenclature and taxonomic rank."
+    }
+  ]
+}

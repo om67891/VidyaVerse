@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VidyaVersePersonaProfile",
+  "description": "Authoritative validation schema for VidyaVerse educational persona profiles.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "persona_id",
+    "display_name",
+    "subject_id",
+    "persona_type",
+    "grade_scope",
+    "short_description",
+    "expertise_topics",
+    "relevant_chapter_ids",
+    "documented_facts",
+    "principles",
+    "reasoning_patterns",
+    "communication_style",
+    "teaching_behaviour",
+    "knowledge_boundaries",
+    "roleplay_rules",
+    "accuracy_rules",
+    "response_modes",
+    "system_prompt",
+    "avatar_path",
+    "sources_file",
+    "examples_file",
+    "enabled"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1,
+      "description": "Schema version number, must be 1"
+    },
+    "persona_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$",
+      "description": "Unique stable identifier for the persona (snake_case)"
+    },
+    "display_name": {
+      "type": "string",
+      "minLength": 2,
+      "description": "Full human-readable display name of the persona"
+    },
+    "subject_id": {
+      "type": "string",
+      "enum": ["history", "mathematics", "evs"],
+      "description": "Primary subject this persona belongs to"
+    },
+    "persona_type": {
+      "type": "string",
+      "enum": [
+        "historical_figure",
+        "scientist",
+        "mentor_coach",
+        "educational_specialist"
+      ],
+      "description": "Class of persona"
+    },
+    "grade_scope": {
+      "type": "object",
+      "required": ["minimum", "maximum"],
+      "properties": {
+        "minimum": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "maximum": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      }
+    },
+    "short_description": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Concise summary for cards and gallery previews"
+    },
+    "expertise_topics": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Specific topics this persona has primary expertise in"
+    },
+    "relevant_chapter_ids": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of chapter IDs where this persona is especially relevant"
+    },
+    "documented_facts": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Verified historical/biographical/scientific facts grounded in sources"
+    },
+    "principles": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Core guiding philosophy, teachings, or educational principles"
+    },
+    "reasoning_patterns": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "How the persona deconstructs problems and approaches learning"
+    },
+    "communication_style": {
+      "type": "object",
+      "required": [
+        "tone",
+        "vocabulary_level",
+        "sentence_style",
+        "explanation_pattern",
+        "question_style",
+        "feedback_style"
+      ],
+      "properties": {
+        "tone": { "type": "string" },
+        "vocabulary_level": { "type": "string" },
+        "sentence_style": { "type": "string" },
+        "explanation_pattern": { "type": "string" },
+        "question_style": { "type": "string" },
+        "feedback_style": { "type": "string" }
+      }
+    },
+    "teaching_behaviour": {
+      "type": "object",
+      "required": [
+        "preferred_formats",
+        "encouragement_style",
+        "misconception_handling",
+        "student_interaction_style"
+      ],
+      "properties": {
+        "preferred_formats": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "encouragement_style": { "type": "string" },
+        "misconception_handling": { "type": "string" },
+        "student_interaction_style": { "type": "string" }
+      }
+    },
+    "knowledge_boundaries": {
+      "type": "object",
+      "required": [
+        "verified_topics",
+        "limited_topics",
+        "unknown_or_uncertain_topics"
+      ],
+      "properties": {
+        "verified_topics": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "limited_topics": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "unknown_or_uncertain_topics": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "roleplay_rules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Rules for educational representation vs authentic quotes/memories"
+    },
+    "accuracy_rules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Strict factual, mathematical, and source boundary rules"
+    },
+    "response_modes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["documented", "persona_inspired", "imaginative"]
+      },
+      "minItems": 1
+    },
+    "system_prompt": {
+      "type": "string",
+      "minLength": 50,
+      "description": "Full compiled instructions passed to Ollama"
+    },
+    "avatar_path": {
+      "type": "string",
+      "description": "Path to local avatar image or SVG, e.g., /avatars/history/sant_dnyaneshwar.svg"
+    },
+    "sources_file": {
+      "type": "string",
+      "description": "Relative filename of source bibliography, typically sources.json"
+    },
+    "examples_file": {
+      "type": "string",
+      "description": "Relative filename of few-shot/evaluation examples, typically examples.jsonl"
+    },
+    "enabled": {
+      "type": "boolean",
+      "description": "Whether the persona is active and discoverable"
+    }
+  },
+  "additionalProperties": false
+}

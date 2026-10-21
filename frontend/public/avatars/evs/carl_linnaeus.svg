@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#15803D" />
+      <stop offset="100%" stop-color="#166534" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- 18th-century Peruke Wig & Botany Specimen -->
+            <path d="M72,70 Q100,50 128,70 Q138,100 128,115 Q100,118 72,115 Z" fill="#E2E8F0" stroke="#CBD5E1" stroke-width="1.5"/>
+            <ellipse cx="100" cy="95" rx="24" ry="26" fill="#FDE68A"/>
+            <circle cx="92" cy="92" r="2" fill="#1E293B"/>
+            <circle cx="108" cy="92" r="2" fill="#1E293B"/>
+            <!-- 18th Century Frock Coat -->
+            <path d="M68,128 C78,120 122,120 132,128 L145,185 L55,185 Z" fill="#14532D"/>
+            <!-- Linnaea Borealis (Twinflower) Herbarium Flower -->
+            <path d="M100,170 Q100,150 93,142 Q100,150 107,142" stroke="#FDE047" stroke-width="2" fill="none"/>
+            <circle cx="93" cy="142" r="3" fill="#F472B6"/>
+            <circle cx="107" cy="142" r="3" fill="#F472B6"/>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Botanist & Taxonomy Guide</text>
+  </g>
+</svg>

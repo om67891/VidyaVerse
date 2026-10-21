@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bg_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F97316" />
+      <stop offset="100%" stop-color="#C2410C" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Outer Ring and Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bg_grad)" stroke="#FFFFFF" stroke-width="4" filter="url(#shadow)"/>
+  <circle cx="100" cy="100" r="91" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1.5"/>
+
+  <!-- Character / Educational Graphic Layer -->
+  <g id="illustration">
+    
+            <!-- Varkari Cap & Face -->
+            <ellipse cx="100" cy="72" rx="24" ry="14" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="1.5"/>
+            <ellipse cx="100" cy="98" rx="25" ry="28" fill="#FDE68A"/>
+            <!-- Tulsi Mala & Tilak -->
+            <circle cx="100" cy="90" r="2" fill="#DC2626"/>
+            <circle cx="91" cy="95" r="2" fill="#292524"/>
+            <circle cx="109" cy="95" r="2" fill="#292524"/>
+            <path d="M92,108 Q100,114 108,108" stroke="#292524" stroke-width="2" fill="none"/>
+            <!-- Robe -->
+            <path d="M68,126 C80,118 120,118 132,126 L142,185 L58,185 Z" fill="#F97316"/>
+            <!-- Chipli / Kartal (Devotional Cymbals) -->
+            <rect x="68" y="145" width="22" height="10" rx="2" fill="#D97706" stroke="#78350F" stroke-width="1.5"/>
+            <rect x="110" y="145" width="22" height="10" rx="2" fill="#D97706" stroke="#78350F" stroke-width="1.5"/>
+            <circle cx="79" cy="150" r="2" fill="#FEF3C7"/>
+            <circle cx="121" cy="150" r="2" fill="#FEF3C7"/>
+        
+  </g>
+
+  <!-- Bottom Identity Pill Badge -->
+  <g transform="translate(100, 182)">
+    <rect x="-70" y="-12" width="140" height="18" rx="9" fill="rgba(15, 23, 42, 0.88)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+    <text x="0" y="0.5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="8.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" dominant-baseline="central" letter-spacing="0.3">Devotional Kirtan Guide</text>
+  </g>
+</svg>

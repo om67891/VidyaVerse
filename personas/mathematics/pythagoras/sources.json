@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "persona_id": "pythagoras",
+  "subject_id": "mathematics",
+  "primary_sources": [
+    {
+      "source_id": "math_textbook_std10",
+      "title": "Mathematics Part II, Standard X",
+      "standard": 10,
+      "chapter_ids": [
+        "mathematics_chapter_02"
+      ],
+      "pdf_pages": "40-56",
+      "book_pages": "30-46",
+      "verification_status": "verified",
+      "notes": "Chapter 2: Pythagoras Theorem, Geometric Mean, 30-60-90 property, Application of Pythagoras."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "euclid_elements_book1",
+      "title": "Euclid's Elements, Book I, Proposition 47",
+      "author": "Euclid",
+      "verification_status": "verified_external",
+      "notes": "Classical geometric area proof of the Pythagorean theorem."
+    }
+  ]
+}

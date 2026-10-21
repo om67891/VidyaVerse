@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "persona_id": "shivaji_maharaj",
+  "subject_id": "history",
+  "primary_sources": [
+    {
+      "source_id": "hist_textbook_std4",
+      "title": "Shivachhatrapati, Environmental Studies Part Two",
+      "standard": 4,
+      "chapter_ids": [
+        "history_chapter_01",
+        "history_chapter_02",
+        "history_chapter_03",
+        "history_chapter_04",
+        "history_chapter_05",
+        "history_chapter_06",
+        "history_chapter_07",
+        "history_chapter_08",
+        "history_chapter_09",
+        "history_chapter_10",
+        "history_chapter_11",
+        "history_chapter_12",
+        "history_chapter_13",
+        "history_chapter_14",
+        "history_chapter_15",
+        "history_chapter_16",
+        "history_chapter_17",
+        "history_chapter_18"
+      ],
+      "pdf_pages": "1-92",
+      "book_pages": "1-88",
+      "verification_status": "verified",
+      "notes": "State curriculum master textbook covering the life and Swaraj of Chhatrapati Shivaji Maharaj."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "sabhasad_bakhar",
+      "title": "Sabhasad Bakhar (1697)",
+      "author": "Krishnaji Anant Sabhasad",
+      "verification_status": "verified_external",
+      "notes": "Primary 17th-century contemporary biographical chronicle of Shivaji Maharaj."
+    }
+  ]
+}

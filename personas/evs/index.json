@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "subject_id": "evs",
+  "total_personas": 8,
+  "personas": [
+    {
+      "persona_id": "charles_darwin",
+      "display_name": "Charles Darwin",
+      "subject_id": "evs",
+      "persona_type": "scientist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "19th-century naturalist who explains how species adapt and evolve over generations through natural selection.",
+      "avatar_path": "/avatars/evs/charles_darwin.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_04",
+        "evs_chapter_05"
+      ],
+      "expertise_topics": [
+        "Concept of biological evolution",
+        "Gradual adaptation to changing environments",
+        "Natural selection and survival",
+        "Fossil evidence and common ancestry",
+        "Extinction of dinosaurs"
+      ],
+      "profile_path": "personas/evs/charles_darwin/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "carl_linnaeus",
+      "display_name": "Carl Linnaeus",
+      "subject_id": "evs",
+      "persona_type": "scientist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "18th-century Swedish botanist who pioneered binomial nomenclature and the scientific classification of living organisms.",
+      "avatar_path": "/avatars/evs/carl_linnaeus.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_03",
+        "evs_chapter_04"
+      ],
+      "expertise_topics": [
+        "Scientific classification of living things",
+        "Binomial nomenclature (Genus and species)",
+        "Kingdoms of life: Animalia and Plantae",
+        "Grouping organisms by shared anatomical characteristics"
+      ],
+      "profile_path": "personas/evs/carl_linnaeus/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "louis_leakey",
+      "display_name": "Louis Leakey",
+      "subject_id": "evs",
+      "persona_type": "scientist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "Renowned 20th-century paleoanthropologist who excavated Olduvai Gorge and identified Homo habilis, the 'Handy Human'.",
+      "avatar_path": "/avatars/evs/louis_leakey.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_05",
+        "evs_chapter_06"
+      ],
+      "expertise_topics": [
+        "Homo habilis ('The Handy Human')",
+        "Olduvai Gorge excavations (Tanzania)",
+        "Fossil hominid skulls and bone structure",
+        "Oldowan stone tool culture",
+        "Stratigraphic fossil dating"
+      ],
+      "profile_path": "personas/evs/louis_leakey/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "christian_thomsen",
+      "display_name": "Christian Thomsen",
+      "subject_id": "evs",
+      "persona_type": "scientist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "19th-century Danish museum curator who formulated the Three-Age System: Stone Age, Bronze Age, and Iron Age.",
+      "avatar_path": "/avatars/evs/christian_thomsen.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_06",
+        "evs_chapter_09",
+        "evs_chapter_10"
+      ],
+      "expertise_topics": [
+        "Three-Age System (Stone Age, Bronze Age, Iron Age)",
+        "Museum curation and artifact sorting",
+        "Technological progression of raw materials",
+        "Archaeological relative dating"
+      ],
+      "profile_path": "personas/evs/christian_thomsen/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "archaeologist",
+      "display_name": "Archaeologist",
+      "subject_id": "evs",
+      "persona_type": "educational_specialist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "Field excavation specialist who reconstructs the past from pottery shards, stone tools, stratified soil layers, and physical evidence.",
+      "avatar_path": "/avatars/evs/archaeologist.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_01",
+        "evs_chapter_06",
+        "evs_chapter_07",
+        "evs_chapter_09"
+      ],
+      "expertise_topics": [
+        "Material, written, and oral historical sources",
+        "Excavation and stratigraphy",
+        "Pottery on the potter's wheel",
+        "Pottery styles, burial sites, and ancient structural ruins",
+        "Distinguishing physical evidence from historical interpretation"
+      ],
+      "profile_path": "personas/evs/archaeologist/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "human_evolution_scientist",
+      "display_name": "Human-Evolution Scientist",
+      "subject_id": "evs",
+      "persona_type": "educational_specialist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "Biological anthropologist guiding students through the sequential stages of early human species and fossil discoveries.",
+      "avatar_path": "/avatars/evs/human_evolution_scientist.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_05"
+      ],
+      "expertise_topics": [
+        "Stages of human evolution",
+        "Australopithecus and bipedal locomotion",
+        "Homo habilis ('Handy Human')",
+        "Homo erectus ('Upright Human' and fire)",
+        "Neanderthal Man and burial customs",
+        "Homo sapiens sapiens (Cro-Magnon and modern humans)"
+      ],
+      "profile_path": "personas/evs/human_evolution_scientist/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "prehistoric_life_guide",
+      "display_name": "Prehistoric-Life Guide",
+      "subject_id": "evs",
+      "persona_type": "educational_specialist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "Vivid educational guide for stone tool technology, hunting-gathering, seasonal shelters, and early animal domestication.",
+      "avatar_path": "/avatars/evs/prehistoric_life_guide.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_06",
+        "evs_chapter_07",
+        "evs_chapter_08"
+      ],
+      "expertise_topics": [
+        "Old Stone Age (Palaeolithic) tool making",
+        "Middle Stone Age (Mesolithic) microliths",
+        "New Stone Age (Neolithic) polished tools",
+        "Mammoth hunting and seasonal camps",
+        "Domestication of the dog and sheep/goat",
+        "Cave paintings at Bhimbetka"
+      ],
+      "profile_path": "personas/evs/prehistoric_life_guide/profile.json",
+      "enabled": true
+    },
+    {
+      "persona_id": "ancient_civilization_guide",
+      "display_name": "Ancient-Civilization Guide",
+      "subject_id": "evs",
+      "persona_type": "educational_specialist",
+      "grade_scope": {
+        "minimum": 5,
+        "maximum": 10
+      },
+      "short_description": "Comparative systems guide for the dawn of settled agriculture, potter's wheel, copper metallurgy, and river valley civilizations.",
+      "avatar_path": "/avatars/evs/ancient_civilization_guide.svg",
+      "relevant_chapter_ids": [
+        "evs_chapter_08",
+        "evs_chapter_09",
+        "evs_chapter_10"
+      ],
+      "expertise_topics": [
+        "Invention of the potter's wheel",
+        "Use of copper and bronze metals",
+        "Emergence of trade, transport, and currency tokens",
+        "River valley civilizations: Indus (Harappa), Tigris-Euphrates, Nile, Yellow River",
+        "Invention of script, seals, and city planning"
+      ],
+      "profile_path": "personas/evs/ancient_civilization_guide/profile.json",
+      "enabled": true
+    }
+  ]
+}

@@ -65,10 +65,14 @@ class HistoryMessage(BaseModel):
 
 
 class ChatRequest(BaseModel):
-    chapter_id: str = Field(..., description="Chapter ID like EVS_CH01")
+    chapter_id: str = Field(..., description="Chapter ID like EVS_CH01 or subject chat id")
     message: str = Field(..., min_length=1)
     history: list[HistoryMessage] = Field(default_factory=list)
     mode: str = Field("study", description="'study' or 'general'")
+    persona_id: Optional[str] = Field(None, description="Active persona ID, e.g. 'pythagoras', 'charles_darwin'")
+    subject_id: Optional[str] = Field(None, description="Subject ID like 'history', 'mathematics', 'evs'")
+    response_mode: Optional[str] = Field(None, description="'documented' | 'persona_inspired' | 'imaginative'")
+    question_format: Optional[str] = Field(None, description="Format directive: who, what, why, how, when, compare, solve, story, quiz, summarise")
 
 
 class SourceReference(BaseModel):
@@ -82,6 +86,8 @@ class ChatResponse(BaseModel):
     sources: list[SourceReference] = []
     mode: str
     retrieved_count: int = 0
+    persona_id: Optional[str] = None
+    suggested_choices: list[str] = []
 
 
 # ── Indexing schemas ───────────────────────────────────────────────────────────

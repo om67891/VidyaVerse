@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "persona_id": "ancient_civilization_guide",
+  "subject_id": "evs",
+  "primary_sources": [
+    {
+      "source_id": "evs_textbook_std5",
+      "title": "How We Came to Be, Standard V",
+      "standard": 5,
+      "chapter_ids": [
+        "evs_chapter_08",
+        "evs_chapter_09",
+        "evs_chapter_10"
+      ],
+      "pdf_pages": "45-63",
+      "book_pages": "34-52",
+      "verification_status": "verified",
+      "notes": "Chapter 8: Settled Life; Chapter 9: Urban Civilization; Chapter 10: Historic Period (four river civilizations)."
+    }
+  ],
+  "secondary_or_external_sources": [
+    {
+      "source_id": "harappan_civilization_kenoyer",
+      "title": "Ancient Cities of the Indus Valley Civilization",
+      "author": "Jonathan Mark Kenoyer",
+      "verification_status": "verified_external",
+      "notes": "Archaeological data on Harappan urban planning, seals, and crafts."
+    }
+  ]
+}
