@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FEF9C3"/>
+      <stop offset="100%" stop-color="#FBBF24"/>
+    </linearGradient>
+    <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#78350F"/>
+      <stop offset="100%" stop-color="#451A03"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#sky2)"/>
+  <!-- Mountain Silhouette of Shivneri -->
+  <polygon points="80,400 240,140 360,140 520,400" fill="url(#mountain)"/>
+  <!-- Fort Bastions (Buruj) -->
+  <rect x="235" y="130" width="30" height="30" fill="#92400E" rx="2"/>
+  <rect x="335" y="130" width="30" height="30" fill="#92400E" rx="2"/>
+  <rect x="260" y="140" width="80" height="20" fill="#78350F"/>
+  <!-- Fort Entrance Arch (Maha Darwaza) -->
+  <path d="M285 160 Q300 145 315 160 L315 160 L285 160 Z" fill="#451A03"/>
+  <!-- Saffron Flag fluttering -->
+  <line x1="300" y1="130" x2="300" y2="90" stroke="#F59E0B" stroke-width="3"/>
+  <path d="M300 90 L350 102 L300 115 Z" fill="#EA580C"/>
+  <!-- Title Badge -->
+  <rect x="20" y="20" width="220" height="52" rx="8" fill="#FFFDF9" opacity="0.9" stroke="#E5DBCA"/>
+  <text x="32" y="42" font-family="Inter, sans-serif" font-size="14" font-weight="bold" fill="#78350F">Fort Shivneri</text>
+  <text x="32" y="60" font-family="Inter, sans-serif" font-size="11" fill="#92400E">Birthplace of Swaraj · 1630</text>
+</svg>

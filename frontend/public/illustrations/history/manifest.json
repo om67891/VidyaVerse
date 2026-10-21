@@ -1,0 +1,47 @@
+{
+  "version": "1.0",
+  "description": "Curated local visual storytelling illustrations for History Learning Hub",
+  "illustrations": [
+    {
+      "key": "saints_pandharpur",
+      "lesson_id": "HIST_L02",
+      "lesson_title": "Work of the Saints",
+      "url": "/illustrations/history/saints_pandharpur.svg",
+      "title": "Pilgrimage to Pandharpur & The Saints",
+      "caption": "Devotees uniting at Pandharpur in love and equality"
+    },
+    {
+      "key": "shivneri_fort",
+      "lesson_id": "HIST_L04",
+      "lesson_title": "Shivaji's Childhood",
+      "url": "/illustrations/history/shivneri_fort.svg",
+      "title": "Fort Shivneri near Junnar",
+      "caption": "The historic birthplace of Chhatrapati Shivaji Maharaj"
+    },
+    {
+      "key": "pratapgad_fort",
+      "lesson_id": "HIST_L09",
+      "lesson_title": "Pratapgad makes History",
+      "url": "/illustrations/history/pratapgad_fort.svg",
+      "title": "Fort Pratapgad & The Sahyadri Hills",
+      "caption": "The mountain stronghold where Afzalkhan was defeated"
+    },
+    {
+      "key": "sindhudurg_fort",
+      "lesson_id": "HIST_L17",
+      "lesson_title": "Management of Forts and the Navy",
+      "url": "/illustrations/history/sindhudurg_fort.svg",
+      "title": "Sea Fort of Sindhudurg (Malvan)",
+      "caption": "Shivaji Maharaj's invincible naval bastion in the Arabian Sea"
+    }
+  ],
+  "hardware_evaluated": {
+    "total_ram_gb": 7.73,
+    "free_ram_gb": 0.14,
+    "free_disk_gb": 1.3,
+    "has_enough_disk_for_weights": false,
+    "has_enough_ram_for_diffusion": false,
+    "feasible_for_sd": false,
+    "recommendation": "Use curated local vector illustrations"
+  }
+}

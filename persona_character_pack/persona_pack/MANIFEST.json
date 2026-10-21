@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "path": "MANIFEST.json",
+      "bytes": 2579
+    },
+    {
+      "path": "PERSONA_CHARACTER_BIBLE.md",
+      "bytes": 25621
+    },
+    {
+      "path": "README.md",
+      "bytes": 5054
+    },
+    {
+      "path": "personas/catalog.json",
+      "bytes": 11018
+    },
+    {
+      "path": "personas/evs/ancient_civilization_guide.json",
+      "bytes": 10390
+    },
+    {
+      "path": "personas/evs/archaeologist.json",
+      "bytes": 10645
+    },
+    {
+      "path": "personas/evs/carl_linnaeus.json",
+      "bytes": 9759
+    },
+    {
+      "path": "personas/evs/charles_darwin.json",
+      "bytes": 10626
+    },
+    {
+      "path": "personas/evs/christian_thomsen.json",
+      "bytes": 10308
+    },
+    {
+      "path": "personas/evs/human_evolution_scientist.json",
+      "bytes": 10181
+    },
+    {
+      "path": "personas/evs/louis_leakey.json",
+      "bytes": 10187
+    },
+    {
+      "path": "personas/evs/prehistoric_life_guide.json",
+      "bytes": 10381
+    },
+    {
+      "path": "personas/history/baji_prabhu_deshpande.json",
+      "bytes": 10330
+    },
+    {
+      "path": "personas/history/moro_trimbak_pingle.json",
+      "bytes": 10368
+    },
+    {
+      "path": "personas/history/samarth_ramdas.json",
+      "bytes": 10115
+    },
+    {
+      "path": "personas/history/sant_dnyaneshwar.json",
+      "bytes": 11433
+    },
+    {
+      "path": "personas/history/sant_eknath.json",
+      "bytes": 10384
+    },
+    {
+      "path": "personas/history/sant_namdeo.json",
+      "bytes": 10392
+    },
+    {
+      "path": "personas/history/sant_tukaram.json",
+      "bytes": 10664
+    },
+    {
+      "path": "personas/history/shivaji_maharaj.json",
+      "bytes": 13828
+    },
+    {
+      "path": "personas/mathematics/apollonius.json",
+      "bytes": 10054
+    },
+    {
+      "path": "personas/mathematics/circle_geometry_coach.json",
+      "bytes": 9764
+    },
+    {
+      "path": "personas/mathematics/coordinate_geometry_coach.json",
+      "bytes": 9656
+    },
+    {
+      "path": "personas/mathematics/geometry_proof_coach.json",
+      "bytes": 10197
+    },
+    {
+      "path": "personas/mathematics/mensuration_coach.json",
+      "bytes": 9656
+    },
+    {
+      "path": "personas/mathematics/pythagoras.json",
+      "bytes": 10771
+    },
+    {
+      "path": "personas/mathematics/similarity_coach.json",
+      "bytes": 9831
+    },
+    {
+      "path": "personas/mathematics/trigonometry_coach.json",
+      "bytes": 9960
+    },
+    {
+      "path": "personas/persona_authoring_template.json",
+      "bytes": 6131
+    },
+    {
+      "path": "personas/shared_behavior_contract.json",
+      "bytes": 3411
+    }
+  ]
+}

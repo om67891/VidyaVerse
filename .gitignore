@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+# Keep example
+!.env.example
+
+# Jupyter
+.ipynb_checkpoints/
+*.nbconvert.py
+
+# HuggingFace model cache (can be large; re-downloaded automatically)
+# Uncomment to ignore:
+# ~/.cache/huggingface/
+
+# Next.js / Node
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+logs/
+
+# Test artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Do NOT ignore these important project files:
+# vectorstore/   ← persisted ChromaDB (keep)
+# Environmental Studies/   ← PDFs (keep)
+# a.ipynb   ← notebook (keep)

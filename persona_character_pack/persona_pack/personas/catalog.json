@@ -1,0 +1,311 @@
+{
+  "schema_version": "1.0.0",
+  "total_personas": 24,
+  "subjects": {
+    "history": 8,
+    "mathematics": 8,
+    "evs": 8
+  },
+  "personas": [
+    {
+      "persona_id": "shivaji_maharaj",
+      "name": "Chhatrapati Shivaji Maharaj",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/shivaji_maharaj.json",
+      "primary_topics": [
+        "Maharashtra before Shivaji",
+        "Maratha Sardars – The Famous House of the Bhonsales",
+        "Shivaji’s Childhood",
+        "Shivaji’s Education",
+        "The Oath of Swaraj",
+        "Swaraj: First Conquest",
+        "Defeat of Internal Enemies",
+        "Pratapgad makes History",
+        "Baji Prabhu and the Memorable Battle of Ghodkhind",
+        "The Discomfiture of Shaistakhan",
+        "The Siege of Purandar and the Treaty with the Moghul Emperor",
+        "Shivaji gives the slip to the Emperor",
+        "The Fort is captured but the Lion is dead",
+        "A Memorable Ceremony",
+        "Campaign in the South",
+        "Management of Forts and the Navy",
+        "Management of the Welfare State of Swaraj"
+      ],
+      "card_summary": "A strategic, responsible leader guiding students through Swaraj, forts, battles, and public welfare."
+    },
+    {
+      "persona_id": "sant_dnyaneshwar",
+      "name": "Sant Dnyaneshwar",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/sant_dnyaneshwar.json",
+      "primary_topics": [
+        "Work of the Saints"
+      ],
+      "card_summary": "A gentle, reflective guide to learning, equality, devotion, and the Dnyaneshwari."
+    },
+    {
+      "persona_id": "sant_namdeo",
+      "name": "Sant Namdeo (Namdev)",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/sant_namdeo.json",
+      "primary_topics": [
+        "Work of the Saints"
+      ],
+      "card_summary": "A devotional-poetry guide who explains song, community, and the Vitthal tradition."
+    },
+    {
+      "persona_id": "sant_eknath",
+      "name": "Sant Eknath",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/sant_eknath.json",
+      "primary_topics": [
+        "Work of the Saints"
+      ],
+      "card_summary": "A compassionate guide focused on equality, service, devotion, and practical kindness."
+    },
+    {
+      "persona_id": "sant_tukaram",
+      "name": "Sant Tukaram",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/sant_tukaram.json",
+      "primary_topics": [
+        "Work of the Saints"
+      ],
+      "card_summary": "A warm and candid guide to abhangs, forgiveness, equality, peace, and compassion."
+    },
+    {
+      "persona_id": "samarth_ramdas",
+      "name": "Samarth Ramdas",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/samarth_ramdas.json",
+      "primary_topics": [
+        "Work of the Saints"
+      ],
+      "card_summary": "A disciplined, energetic mentor for self-control, courage, unity, and good conduct."
+    },
+    {
+      "persona_id": "baji_prabhu_deshpande",
+      "name": "Baji Prabhu Deshpande",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/baji_prabhu_deshpande.json",
+      "primary_topics": [
+        "Baji Prabhu and the Memorable Battle of Ghodkhind"
+      ],
+      "card_summary": "A focused guide to the Ghodkhind episode, courage, responsibility, and sacrifice."
+    },
+    {
+      "persona_id": "moro_trimbak_pingle",
+      "name": "Moro Trimbak Pingle",
+      "subject_id": "history",
+      "persona_type": "historical_figure",
+      "file": "personas/history/moro_trimbak_pingle.json",
+      "primary_topics": [
+        "Management of the Welfare State of Swaraj",
+        "Management of Forts and the Navy"
+      ],
+      "card_summary": "An administration-focused guide to planning, public systems, and the council of eight ministers."
+    },
+    {
+      "persona_id": "pythagoras",
+      "name": "Pythagoras",
+      "subject_id": "mathematics",
+      "persona_type": "historical_figure",
+      "file": "personas/mathematics/pythagoras.json",
+      "primary_topics": [
+        "Pythagoras Theorem",
+        "Similarity"
+      ],
+      "card_summary": "A curious, diagram-first guide to right triangles and the Pythagorean relationship."
+    },
+    {
+      "persona_id": "apollonius",
+      "name": "Apollonius of Perga",
+      "subject_id": "mathematics",
+      "persona_type": "historical_figure",
+      "file": "personas/mathematics/apollonius.json",
+      "primary_topics": [
+        "Pythagoras Theorem"
+      ],
+      "card_summary": "A theorem-focused geometry guide who builds proofs from labels, diagrams, and logical steps."
+    },
+    {
+      "persona_id": "similarity_coach",
+      "name": "Similarity Coach",
+      "subject_id": "mathematics",
+      "persona_type": "teaching_role",
+      "file": "personas/mathematics/similarity_coach.json",
+      "primary_topics": [
+        "Similarity"
+      ],
+      "card_summary": "A visual pattern finder for similar triangles, proportional sides, and area ratios."
+    },
+    {
+      "persona_id": "geometry_proof_coach",
+      "name": "Geometry Proof Coach",
+      "subject_id": "mathematics",
+      "persona_type": "teaching_role",
+      "file": "personas/mathematics/geometry_proof_coach.json",
+      "primary_topics": [
+        "Similarity",
+        "Pythagoras Theorem",
+        "Geometric Constructions",
+        "Circle"
+      ],
+      "card_summary": "A structured coach for constructing proofs and explaining why every step is valid."
+    },
+    {
+      "persona_id": "circle_geometry_coach",
+      "name": "Circle Geometry Coach",
+      "subject_id": "mathematics",
+      "persona_type": "teaching_role",
+      "file": "personas/mathematics/circle_geometry_coach.json",
+      "primary_topics": [
+        "Circle"
+      ],
+      "card_summary": "A diagram-first guide to chords, tangents, angles, and circle theorems."
+    },
+    {
+      "persona_id": "coordinate_geometry_coach",
+      "name": "Coordinate Geometry Coach",
+      "subject_id": "mathematics",
+      "persona_type": "teaching_role",
+      "file": "personas/mathematics/coordinate_geometry_coach.json",
+      "primary_topics": [
+        "Co-ordinate Geometry"
+      ],
+      "card_summary": "A coordinate-plane navigator for distance, slope, collinearity, and section formulas."
+    },
+    {
+      "persona_id": "trigonometry_coach",
+      "name": "Trigonometry Coach",
+      "subject_id": "mathematics",
+      "persona_type": "teaching_role",
+      "file": "personas/mathematics/trigonometry_coach.json",
+      "primary_topics": [
+        "Trigonometry"
+      ],
+      "card_summary": "A practical guide to ratios, identities, and calculating heights or distances."
+    },
+    {
+      "persona_id": "mensuration_coach",
+      "name": "Mensuration Coach",
+      "subject_id": "mathematics",
+      "persona_type": "teaching_role",
+      "file": "personas/mathematics/mensuration_coach.json",
+      "primary_topics": [
+        "Mensuration"
+      ],
+      "card_summary": "A units-first guide to areas, surface areas, and volumes of real objects."
+    },
+    {
+      "persona_id": "charles_darwin",
+      "name": "Charles Darwin",
+      "subject_id": "evs",
+      "persona_type": "historical_scientist",
+      "file": "personas/evs/charles_darwin.json",
+      "primary_topics": [
+        "Evolution",
+        "Evolution of Mankind"
+      ],
+      "card_summary": "A careful evidence-led guide to variation, adaptation, and evolution."
+    },
+    {
+      "persona_id": "carl_linnaeus",
+      "name": "Carl Linnaeus",
+      "subject_id": "evs",
+      "persona_type": "historical_scientist",
+      "file": "personas/evs/carl_linnaeus.json",
+      "primary_topics": [
+        "Evolution",
+        "Life on Earth"
+      ],
+      "card_summary": "A classification guide who helps students group organisms by shared characteristics."
+    },
+    {
+      "persona_id": "louis_leakey",
+      "name": "Louis Leakey",
+      "subject_id": "evs",
+      "persona_type": "historical_scientist",
+      "file": "personas/evs/louis_leakey.json",
+      "primary_topics": [
+        "Evolution of Mankind",
+        "Stone Age: Stone Tools"
+      ],
+      "card_summary": "A fossil-and-tools investigator who explains how evidence informs the study of early humans."
+    },
+    {
+      "persona_id": "christian_thomsen",
+      "name": "Christian Thomsen",
+      "subject_id": "evs",
+      "persona_type": "historical_scholar",
+      "file": "personas/evs/christian_thomsen.json",
+      "primary_topics": [
+        "Stone Age: Stone Tools",
+        "Settled Life and Urban Civilization"
+      ],
+      "card_summary": "An artifact-classification guide who shows how archaeologists organise evidence from the past."
+    },
+    {
+      "persona_id": "archaeologist",
+      "name": "The Archaeologist",
+      "subject_id": "evs",
+      "persona_type": "teaching_role",
+      "file": "personas/evs/archaeologist.json",
+      "primary_topics": [
+        "What is History?",
+        "History and the Concept of Time",
+        "Stone Age: Stone Tools",
+        "From Shelters to Village-settlements",
+        "Beginning of Settled Life",
+        "Settled Life and Urban Civilization",
+        "Historic Period"
+      ],
+      "card_summary": "A careful investigator of artifacts, inscriptions, ruins, and excavation evidence."
+    },
+    {
+      "persona_id": "human_evolution_scientist",
+      "name": "The Human-Evolution Scientist",
+      "subject_id": "evs",
+      "persona_type": "teaching_role",
+      "file": "personas/evs/human_evolution_scientist.json",
+      "primary_topics": [
+        "Evolution",
+        "Evolution of Mankind",
+        "Stone Age: Stone Tools"
+      ],
+      "card_summary": "A scientist-guide to fossils, early human species, tools, and changing ways of life."
+    },
+    {
+      "persona_id": "prehistoric_life_guide",
+      "name": "The Prehistoric-Life Guide",
+      "subject_id": "evs",
+      "persona_type": "teaching_role",
+      "file": "personas/evs/prehistoric_life_guide.json",
+      "primary_topics": [
+        "Stone Age: Stone Tools",
+        "From Shelters to Village-settlements",
+        "Beginning of Settled Life"
+      ],
+      "card_summary": "An imaginative but evidence-conscious guide to shelters, tools, fire, domestication, and early settlements."
+    },
+    {
+      "persona_id": "ancient_civilization_guide",
+      "name": "The Ancient-Civilization Guide",
+      "subject_id": "evs",
+      "persona_type": "teaching_role",
+      "file": "personas/evs/ancient_civilization_guide.json",
+      "primary_topics": [
+        "Settled Life and Urban Civilization",
+        "Historic Period"
+      ],
+      "card_summary": "A comparative guide to early cities, river valleys, metals, trade, writing, and culture."
+    }
+  ]
+}
