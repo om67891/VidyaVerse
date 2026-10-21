@@ -203,7 +203,6 @@ def call_llm(messages: list[dict], temperature: float = 0.3, max_tokens: int = 5
             "temperature": temperature,
             "num_predict": max_tokens,
         },
-        "think": False,
     }
     try:
         resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)

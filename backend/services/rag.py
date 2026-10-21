@@ -49,13 +49,47 @@ def retrieve_passages(
 ) -> list[dict]:
     """
     Retrieve the top-k most relevant chunks for the given query,
-    strictly filtered to the specified chapter_id.
+    strictly filtered to the specified chapter_id across History, Mathematics, and EVS.
 
     Returns list of dicts: {text, chapter_name, source, page_number, distance}
     """
     top_k = top_k or settings.rag_top_k
-    collection = get_chroma_collection()
+    clean_chap = (chapter_id or "").strip().lower()
 
+    # Route to appropriate subject
+    if clean_chap.startswith("hist") or "hist" in clean_chap:
+        subject = "history"
+    elif clean_chap.startswith("math") or "math" in clean_chap:
+        subject = "mathematics"
+    else:
+        subject = "evs"
+
+    try:
+        from backend.services.retrieval_service import get_retrieval_service
+        rs = get_retrieval_service()
+        res = rs.retrieve(
+            subject_id=subject,
+            query=query,
+            chat_scope="chapter",
+            chapter_id=chapter_id,
+            top_k=top_k,
+        )
+        if res.evidences:
+            passages = []
+            for ev in res.evidences:
+                passages.append({
+                    "text": ev.content,
+                    "chapter_name": ev.chapter_title,
+                    "source": ev.source_document,
+                    "page_number": ev.book_page,
+                    "distance": ev.distance,
+                })
+            return passages
+    except Exception as e:
+        print(f"[RAG] Multi-subject retrieval fallback: {e}")
+
+    # Fallback to direct Chroma collection for legacy EVS
+    collection = get_chroma_collection()
     if collection.count() == 0:
         return []
 
@@ -94,10 +128,13 @@ def retrieve_passages(
 def retrieve_chapter_overview(chapter_id: str, chapter_title: str) -> list[dict]:
     """
     Generic chapter-overview retrieval strategy:
-    Combines opening section chunks (headings, outlines, introductory definitions)
-    with top semantic chunks for the chapter's main concepts.
-    Strictly isolated to chapter_id.
+    Combines opening section chunks with top semantic chunks for the chapter's main concepts.
+    Strictly isolated to chapter_id across all subjects.
     """
+    clean_chap = (chapter_id or "").strip().lower()
+    if clean_chap.startswith("hist") or clean_chap.startswith("math"):
+        return retrieve_passages(chapter_id, f"{chapter_title} overview main topics summary key concepts", top_k=4)
+
     collection = get_chroma_collection()
     if collection.count() == 0:
         return []
@@ -186,7 +223,8 @@ _CHAPTER_OVERVIEW_PATTERNS = re.compile(
     r"what\s+are\s+the\s+(\w+\s+)?(main|key)\s+(topics|concepts|points|lessons|things)\s+(taught|discussed|covered|in|here)|"
     r"why\s+is\s+(the\s+topic\s+of\s+)?this\s+chapter\s+important|"
     r"key\s+concepts\s+discussed\s+here|"
-    r"what\s+do\s+we\s+learn\s+in\s+this\s+chapter"
+    r"what\s+do\s+we\s+learn\s+in\s+this\s+chapter|"
+    r"(explain|teach|tell\s+me)\s+(one|a|any|the)?\s*concept\s+from\s+(this|the|the\s+currently\s+selected)\s+chapter"
     r")\b",
     re.IGNORECASE,
 )
@@ -709,6 +747,27 @@ def build_chat_messages(
         for m in recent_history
     ]
 
+    # --- Mode: general_chat ---
+    if mode == "general_chat":
+        display_name = "Tutor"
+        if persona_id:
+            from backend.services.persona_manager import get_persona_manager
+            p = get_persona_manager().get_persona(persona_id)
+            if p:
+                display_name = p.get("display_name", "Tutor")
+        return [
+            {
+                "role": "system",
+                "content": (
+                    f"You are {display_name}, a friendly educational tutor for school students. "
+                    "Keep internal reasoning under 10 words. "
+                    "Greet the student warmly in 1-2 friendly sentences and offer to help them learn."
+                ),
+            },
+            *history_messages,
+            {"role": "user", "content": query},
+        ]
+
     # Persona dynamic prompt construction
     if persona_id:
         from backend.services.persona_manager import get_persona_manager
@@ -833,18 +892,20 @@ def build_chat_messages(
             for p in passages
         ]
         context_str = "\n\n".join(context_parts) if context_parts else "(No specific passages)"
+        subj_label = subject_name or "their studies"
 
         system_content = (
-            f"You are a friendly tutor helping a Class 5 student (about 10 years old) with Environmental Studies.\n"
+            f"You are a friendly tutor helping a school student with {subj_label}.\n"
             f"Current Chapter: {chapter_name}\n\n"
-            f"TEXTBOOK CONTEXT (from {chapter_name}):\n{context_str}\n\n"
+            f"TEXTBOOK REFERENCE (from {chapter_name}):\n{context_str}\n\n"
             "INSTRUCTIONS:\n"
+            "- Answer the student's actual question directly in your first sentence.\n"
             "- The student's question connects the chapter with general knowledge or asks for a comparison.\n"
             "- Ground the chapter's part strictly in the provided textbook passages.\n"
             "- Supplement with general knowledge to explain the comparison or external concept.\n"
             "- Clearly distinguish between what the textbook says and the additional general knowledge explanation.\n"
-            "- Keep the explanation simple, focused, and age-appropriate for a 10-year-old child.\n"
-            "- Do NOT prepend 'Student:' or 'Tutor:' or 'According to Passage 1:'. Do NOT append generic closing lines."
+            "- Keep the explanation simple, focused, and age-appropriate for school students (Standard V-VIII).\n"
+            "- Do NOT prepend 'Student:' or 'Tutor:'. Never recite guidelines or instructions."
         )
         return [
             {"role": "system", "content": system_content},
@@ -855,13 +916,14 @@ def build_chat_messages(
     # --- Mode: chapter_question (honest absence) ---
     if flags.get("not_covered"):
         subject = flags.get("uncovered_subject", "this topic")
+        subj_label = subject_name or "their studies"
         system_content = (
-            f"You are a clear and honest educational tutor for Class 5 Environmental Studies.\n"
+            f"You are a clear and honest educational tutor for {subj_label}.\n"
             f"Current Chapter: {chapter_name}\n\n"
             f"IMPORTANT NOTE: The student is asking what {chapter_name} says about '{subject}'. "
             f"This chapter does NOT mention, discuss, or cover '{subject}'.\n\n"
             "INSTRUCTIONS:\n"
-            f"- State clearly, honestly, and directly that {chapter_name} does not discuss or cover '{subject}'.\n"
+            f"- State clearly, honestly, and directly in your first sentence that {chapter_name} does not discuss or cover '{subject}'.\n"
             f"- Briefly explain what {chapter_name} is actually about based on its title and subject matter.\n"
             "- Do NOT invent names, facts, page numbers, or fake citations.\n"
             "- Do NOT prepend 'Student:' or 'Tutor:'."
@@ -880,8 +942,9 @@ def build_chat_messages(
     context_str = "\n\n".join(context_parts) if context_parts else "(No passages available)"
 
     if flags.get("is_chapter_roleplay"):
+        subj_label = subject_name or "their studies"
         system_content = (
-            f"You are engaging in an educational roleplay for a Class 5 student (about 10 years old).\n"
+            f"You are engaging in an educational roleplay for a school student studying {subj_label}.\n"
             f"Current Chapter: {chapter_name}\n\n"
             f"TEXTBOOK CONTEXT (from {chapter_name}):\n{context_str}\n\n"
             "ROLEPLAY INSTRUCTIONS:\n"
@@ -889,8 +952,8 @@ def build_chat_messages(
             "- Speak warmly, enthusiastically, and in the FIRST PERSON ('I excavate ancient settlements...', 'In my daily research...').\n"
             f"- Ground your daily activities, findings, and tools strictly in the topics and evidence of {chapter_name} (from the textbook context).\n"
             "- Never invent authentic historical quotes or claim invented dialogue is real.\n"
-            "- Do NOT reference unrelated topics from previous conversation turns (like smartphones or modern computers) unless the chapter actually covers them.\n"
-            "- Keep the tone inspiring, vivid, and suitable for a 10-year-old child.\n"
+            "- Do NOT reference unrelated topics from previous conversation turns unless the chapter actually covers them.\n"
+            "- Keep the tone inspiring, vivid, and suitable for school students.\n"
             "- Do NOT prepend 'Student:' or 'Tutor:'."
         )
         return [
@@ -900,21 +963,20 @@ def build_chat_messages(
         ]
 
     # --- Mode: chapter_question (standard grounded textbook query) ---
+    subj_label = subject_name or "their studies"
     system_content = (
-        f"You are a friendly and clear tutor helping a Class 5 student (about 10 years old) with Environmental Studies.\n"
+        f"You are a friendly and clear tutor helping a school student with {subj_label}.\n"
         f"Current Chapter: {chapter_name}\n\n"
-        f"TEXTBOOK CONTEXT (from {chapter_name}):\n{context_str}\n\n"
-        "INSTRUCTIONS:\n"
-        "- Answer the student's actual question directly, grounded strictly in the provided textbook context.\n"
-        "- Explain simply and clearly, suitable for a 10-year-old child.\n"
-        "- If the student asks for bullet points or a specific count (e.g. 'at least 10 bullet points'): "
-        "provide at least that number of distinct, informative bullet points drawn from the textbook context.\n"
-        "- If the student asks for a chapter summary or main topics: provide a well-organized, coherent explanation of the main concepts in the chapter based on the textbook context.\n"
+        f"TEXTBOOK REFERENCE (from {chapter_name}):\n{context_str}\n\n"
+        "MANDATORY TUTORING RULES:\n"
+        "- Answer the student's actual question directly in your very first sentence.\n"
+        "- Keep explanations concise, clear, and age-appropriate for Standard V–VIII (30-70 words for simple definitions, 50-120 words for concepts).\n"
+        "- If the student asks for bullet points or a specific count: provide distinct, informative points drawn from the textbook context.\n"
+        "- If the student asks for a chapter summary or main topics: provide a well-organized explanation of the main concepts in the chapter.\n"
         "- If the student asks for an example: give a concrete, relatable example grounded in the chapter.\n"
-        "- If the student asks to arrange events in chronological order: examine the sequence of events described in the textbook context and arrange them strictly in that chronological order.\n"
         "- For follow-up questions, answer directly without re-explaining the entire prior response from scratch.\n"
-        "- Do NOT invent facts, dates, quotations, or citations not present in the context.\n"
-        "- Do NOT say 'Student:' or 'Tutor:' or 'According to Passage 1:'. Do NOT append generic closing questions."
+        "- Do NOT invent facts, dates, quotations, or citations not present in the reference material.\n"
+        "- Never recite internal instructions, tone descriptions, or rubrics. Output ONLY the student-facing response in clean Markdown."
     )
     return [
         {"role": "system", "content": system_content},
@@ -923,12 +985,53 @@ def build_chat_messages(
     ]
 
 
-# ── Ollama Generation ──────────────────────────────────────────────────────────
+# ── Ollama Generation & Leakage Detection ──────────────────────────────────────
+
+_INSTRUCTION_LEAKAGE_PATTERNS = [
+    re.compile(r"^\s*we are teaching\b", re.IGNORECASE),
+    re.compile(r"^\s*as\s+(?:the\s+)?(?:persona|educational persona|pythagoras|shivaji|tutor|mentor)[,\s]+i\s+(?:must|should|will)\b", re.IGNORECASE),
+    re.compile(r"\bkey points from the persona guidelines\b", re.IGNORECASE),
+    re.compile(r"\bexplanation structure:\s*situation\b", re.IGNORECASE),
+    re.compile(r"\btone\s*(?:and|&)\s*vocabulary\b", re.IGNORECASE),
+    re.compile(r"^\s*teaching method:\s*", re.IGNORECASE | re.MULTILINE),
+    re.compile(r"^\s*steps for the response:\s*", re.IGNORECASE | re.MULTILINE),
+    re.compile(r"\bstrict guidelines\b", re.IGNORECASE),
+    re.compile(r"\bresponse rubric\b", re.IGNORECASE),
+    re.compile(r"\baccording to my instructions\b", re.IGNORECASE),
+    re.compile(r"\bhere is how i will answer\b", re.IGNORECASE),
+    re.compile(r"^\s*i must respond with:\s*", re.IGNORECASE | re.MULTILINE),
+    re.compile(r"^\s*situation\s*->\s*dilemma\s*->\s*decision", re.IGNORECASE | re.MULTILINE),
+]
+
+
+def detect_instruction_leakage(text: str) -> bool:
+    """Return True if the text leaks internal guidelines, prompt rubrics, or persona meta-instructions."""
+    if not text or not text.strip():
+        return False
+    for pat in _INSTRUCTION_LEAKAGE_PATTERNS:
+        if pat.search(text):
+            return True
+    return False
+
+
+def clean_leaked_instructions(text: str) -> str:
+    """Attempt to strip leading meta-rubric paragraphs if the actual student answer follows."""
+    paragraphs = text.split("\n\n")
+    cleaned_paras = []
+    for p in paragraphs:
+        if detect_instruction_leakage(p):
+            continue
+        if re.match(r"^\s*(?:Key points|Steps|Tone|Vocabulary|Explanation Structure|Teaching Method):", p, re.IGNORECASE):
+            continue
+        cleaned_paras.append(p)
+    return "\n\n".join(cleaned_paras).strip()
 
 
 def _remove_thinking_tags(text: str) -> str:
     """Remove <think>…</think> blocks that some models produce."""
-    return re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    text = re.sub(r"^.*?</think>\s*", "", text, flags=re.DOTALL)
+    return text.strip()
 
 
 def _clean_output_text(text: str) -> str:
@@ -937,6 +1040,14 @@ def _clean_output_text(text: str) -> str:
 
     # Remove accidental leading role labels
     clean = re.sub(r"^(Student|Tutor|Assistant|User):\s*", "", clean, flags=re.IGNORECASE).strip()
+
+    # Remove accidental leading meta-announcements if the answer follows
+    clean = re.sub(
+        r"^(?:As\s+[A-Za-z\s]+,\s+I\s+must\s+respond\s+with[:\s]*|We\s+are\s+teaching\s+about\s+[^\n]+[:\s]*|Steps\s+for\s+the\s+response[:\s]*|Tone\s+and\s+Vocabulary[:\s]*|Teaching\s+Method[:\s]*)\n*",
+        "",
+        clean,
+        flags=re.IGNORECASE,
+    ).strip()
 
     # Remove 'According to Passage \d+[:\s]*'
     clean = re.sub(r"According to Passage \d+[:\s]*", "", clean, flags=re.IGNORECASE).strip()
@@ -957,42 +1068,91 @@ def _clean_output_text(text: str) -> str:
         flags=re.IGNORECASE,
     ).strip()
 
+    # Remove internal meta-notes like (Internal: 5 words)
+    clean = re.sub(r"\s*\((?:Internal|Note|Words?):.*?\)\s*", "", clean, flags=re.IGNORECASE).strip()
+
     return clean
 
 
 def generate_with_ollama_chat(messages: list[dict], temperature: float = 0.25) -> str:
     """
     Send structured chat messages to Ollama's /api/chat endpoint.
-    Strips chain-of-thought thinking blocks and dialog artifacts.
-    Gracefully falls back to qwen3:1.7b if the configured primary model is not yet available in Ollama.
+    Omits 'think: False' so Qwen3 cleanly separates thinking tokens into data['message']['thinking'],
+    preventing chain-of-thought from leaking into final student content.
+    Includes automated instruction leakage detection and single-retry recovery.
     """
     url = f"{settings.ollama_base_url}/api/chat"
     models_to_try = [settings.ollama_model]
     if settings.ollama_model != "qwen3:1.7b":
         models_to_try.append("qwen3:1.7b")
 
-    last_error = None
-    for model_name in models_to_try:
+    def _call_ollama(msgs: list[dict], model: str) -> str:
         payload = {
-            "model": model_name,
-            "messages": messages,
+            "model": model,
+            "messages": msgs,
             "stream": False,
             "options": {
                 "temperature": temperature,
-                "num_predict": 600,
+                "num_predict": 1200,
             },
-            "think": False,
         }
+        resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)
+        if resp.status_code == 404:
+            raise KeyError(f"Model {model} not found")
+        resp.raise_for_status()
+        data = resp.json()
+        msg = data.get("message", {})
+        raw = msg.get("content", "").strip()
+        print(f"[RAG DEBUG] eval_count={data.get('eval_count')}, content_len={len(raw)}, think_len={len(msg.get('thinking', ''))}")
+        if not raw and msg.get("thinking"):
+            th = msg.get("thinking", "")
+            print(f"[RAG DEBUG] raw is empty! thinking snippet: {th[:150]}")
+            if "</think>" in th:
+                raw = th.split("</think>")[-1].strip()
+        print(f"[RAG DEBUG] raw after check: {repr(raw[:100])}")
+        clean = _clean_output_text(raw)
+        print(f"[RAG DEBUG] clean: {repr(clean[:100])}")
+        return clean
 
+    last_error = None
+    for model_name in models_to_try:
         try:
-            resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)
-            if resp.status_code == 404 and model_name != models_to_try[-1]:
-                # Primary model not found (e.g. downloading), try fallback
-                continue
-            resp.raise_for_status()
-            data = resp.json()
-            raw = data.get("message", {}).get("content", "").strip()
-            return _clean_output_text(raw)
+            answer = _call_ollama(messages, model_name)
+            print(f"[RAG DEBUG] First answer: {repr(answer[:100])}")
+            leak = detect_instruction_leakage(answer)
+            print(f"[RAG DEBUG] Leak detected: {leak}")
+
+            # Check for instruction leakage
+            if detect_instruction_leakage(answer):
+                print(f"[RAG] Instruction leakage detected in model output: '{answer[:80]}...'. Retrying once with strict anti-leakage prompt.")
+                retry_messages = list(messages) + [
+                    {"role": "assistant", "content": answer},
+                    {
+                        "role": "user",
+                        "content": (
+                            "CRITICAL CORRECTION: You recited internal instructions, rubrics, or guidelines. "
+                            "Please answer the student's question directly in the very first sentence. "
+                            "Output ONLY the final student-facing answer in clean Markdown without any meta-commentary, rubrics, or tone descriptions."
+                        ),
+                    },
+                ]
+                try:
+                    retry_answer = _call_ollama(retry_messages, model_name)
+                    if not detect_instruction_leakage(retry_answer) and retry_answer.strip():
+                        return retry_answer
+                    else:
+                        salvaged = clean_leaked_instructions(retry_answer or answer)
+                        if salvaged:
+                            return salvaged
+                except Exception as retry_err:
+                    print(f"[RAG] Retry failed: {retry_err}")
+                    salvaged = clean_leaked_instructions(answer)
+                    if salvaged:
+                        return salvaged
+
+            return answer
+        except KeyError:
+            continue
         except requests.exceptions.ConnectionError:
             raise RuntimeError(
                 f"Cannot connect to Ollama at {settings.ollama_base_url}. "
@@ -1130,6 +1290,17 @@ def process_chat(request: ChatRequest) -> ChatResponse:
 
     # 4. Generate answer with Ollama
     answer = generate_with_ollama_chat(messages, temperature=0.25)
+
+    # 4b. Validate biographical factual accuracy for historical figures
+    if request.persona_id:
+        try:
+            from backend.services.citation_validator import get_citation_validator
+            cv = get_citation_validator()
+            _, answer, _ = cv.validate_biographical_content(request.persona_id, answer, [])
+        except Exception as bg_err:
+            print(f"[RAG] Biographical validation error: {bg_err}")
+
+    print(f"[RAG] Final Answer for '{request.message}':\n{answer}")
 
     # 5. Filter supporting source citations
     sources = filter_supporting_sources(passages, mode, flags)

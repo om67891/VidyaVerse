@@ -100,7 +100,10 @@ def get_embedding_model():
     if _embedding_model is None:
         from sentence_transformers import SentenceTransformer
         print(f"Loading embedding model: {settings.embedding_model_name} …")
-        _embedding_model = SentenceTransformer(settings.embedding_model_name)
+        try:
+            _embedding_model = SentenceTransformer(settings.embedding_model_name, local_files_only=True)
+        except Exception:
+            _embedding_model = SentenceTransformer(settings.embedding_model_name)
         print("  ✓  Embedding model loaded.")
     return _embedding_model
 

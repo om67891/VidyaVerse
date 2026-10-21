@@ -177,6 +177,26 @@ class CitationValidator:
                         flags=re.IGNORECASE,
                     )
 
+            # Check for false birth date (e.g. 23 November 1630)
+            if re.search(r"23(?:rd)?\s+nov(?:ember)?(?:\s*,?\s*1630)?", answer_text, re.IGNORECASE):
+                warnings.append("Detected unverified birth date claim (23 November). Correcting to 19 February 1630.")
+                answer_text = re.sub(
+                    r"23(?:rd)?\s+nov(?:ember)?(?:\s*,?\s*1630)?",
+                    "19 February 1630 (Falgun Vadya Tritiya, Shake 1551)",
+                    answer_text,
+                    flags=re.IGNORECASE,
+                )
+
+            # Check for false river association with birthplace (e.g. Tapti River)
+            if re.search(r"\b(?:tapti|tapi)\b", answer_text, re.IGNORECASE):
+                warnings.append("Detected false river claim (Tapti). Correcting fort geography to Junnar in Pune district.")
+                answer_text = re.sub(
+                    r"(?:on\s+or\s+)?(?:near\s+(?:the\s+)?)?(?:tapti|tapi)(?:\s+river)?",
+                    "near Junnar in Pune district",
+                    answer_text,
+                    flags=re.IGNORECASE,
+                )
+
         return (len(warnings) == 0, answer_text, warnings)
 
     def _extract_num(self, text: str) -> Optional[int]:

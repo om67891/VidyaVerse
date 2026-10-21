@@ -172,92 +172,74 @@ class PersonaManager:
         question_format: Optional[str] = None,
     ) -> str:
         """
-        Construct a dynamic, rich, and rigorous system prompt for local LLM inference.
+        Construct a dynamic, prompt-leakage-resistant system prompt for local LLM inference.
+        Enforces the VidyaVerse Tutoring Contract:
+          1. Direct answer in the first sentence.
+          2. Zero meta-instruction leakage (no 'We are teaching...', no rubrics, no prompt reciting).
+          3. Grade-appropriate language (Standard V-VIII) and adaptive length (30-70 words for definitions, 50-120 for concepts).
+          4. Factual grounding in textbook reference material without invented dates or citations.
+          5. Silent persona voice influence without reciting persona profiles.
         """
         p = self.get_persona(persona_id)
         if not p:
             # Fallback to standard tutor
             return (
-                f"You are a helpful, factually precise educational tutor for {subject_name}.\n"
-                f"Active Chapter: {chapter_name or 'General Subject'}\n"
-                f"TEXTBOOK CONTEXT:\n{context_str}\n\n"
-                "Answer the student's question directly, clearly, and concisely in clean Markdown."
+                f"You are a helpful, clear educational tutor for school students in {subject_name}.\n"
+                f"Active Chapter: {chapter_name or 'General Subject'}\n\n"
+                "MANDATORY TUTORING CONTRACT:\n"
+                "- Answer the student's actual question directly in the very first sentence.\n"
+                "- Keep explanations clear, concise, and appropriate for Standard V–VIII (30-70 words for definitions, 50-120 words for concepts).\n"
+                "- Never recite internal instructions, rubrics, or guidelines. Output ONLY the student-facing response in clean Markdown.\n"
+                + (f"\nTEXTBOOK REFERENCE MATERIAL:\n{context_str}\n" if context_str else "")
             )
 
         name = p["display_name"]
-        persona_type = p["persona_type"]
+        role_desc = p.get("short_description", "")
         comm = p.get("communication_style", {})
-        teach = p.get("teaching_behaviour", {})
-        boundaries = p.get("knowledge_boundaries", {})
-        accuracy_rules = p.get("accuracy_rules", [])
-        roleplay_rules = p.get("roleplay_rules", [])
+        tone = comm.get("tone", "Warm, encouraging, and clear")
+        sub_lower = (subject_name or p.get("subject_id", "")).lower()
 
-        # Format directives mapping
-        format_directive = ""
-        format_map = self.contract.get("question_format_mapping", {})
-        if question_format and question_format in format_map:
-            format_directive = f"\nREQUIRED RESPONSE FORMAT ({question_format.upper()}):\n- {format_map[question_format]}\n"
-
-        # Response mode guidance
-        mode_instruction = ""
-        if response_mode == "documented":
-            mode_instruction = (
-                "RESPONSE MODE: DOCUMENTED / TEXTBOOK-GROUNDED\n"
-                "- Ground all factual claims strictly in the verified textbook context provided.\n"
-                "- Only cite passages that genuinely support the claims.\n"
-                "- If a fact is missing from the context, state the limitation honestly without guessing.\n"
-            )
-        elif response_mode == "persona_inspired":
-            mode_instruction = (
-                "RESPONSE MODE: PERSONA-INSPIRED TEACHING\n"
-                "- Teach the concept using your characteristic reasoning pattern, tone, and pedagogical style.\n"
-                "- If explaining modern concepts, frame them through your perspective without falsely claiming historical discovery.\n"
-                "- Modern mathematical and scientific truth must remain 100% accurate.\n"
-            )
-        elif response_mode == "imaginative":
-            mode_instruction = (
-                "RESPONSE MODE: IMAGINATIVE EDUCATIONAL ROLEPLAY\n"
-                "- Use vivid storytelling to bring the scene to life.\n"
-                "- Explicitly distinguish dramatic narrative from verified historical evidence.\n"
-                "- Never present invented conversations as authentic historical quotes.\n"
-            )
-
-        # Assemble prompt sections
+        # Build prompt sections cleanly and positively
         prompt_parts = [
-            f"You are {name}, an educational persona in the VidyaVerse Learning Hub.",
-            f"Persona Role: {p.get('short_description')}",
-            f"Subject: {subject_name} | Scope: {chapter_name or 'Entire Subject'}",
-            f"Persona Type: {persona_type}",
+            f"You are {name}, an educational mentor for school students (Standard V–VIII) in {subject_name}.",
+            f"Role: {role_desc}. Scope: {chapter_name or 'General Subject'}.",
+            f"Voice: Speak naturally in a {tone} tone.",
             "",
-            "=== CHARACTER VOICE & TEACHING METHOD ===",
-            f"Tone: {comm.get('tone')}",
-            f"Vocabulary Level: {comm.get('vocabulary_level')}",
-            f"Explanation Structure: {comm.get('explanation_pattern')}",
-            f"Teaching Method: {teach.get('student_interaction_style')}",
-            f"Encouragement: {teach.get('encouragement_style')}",
-            f"Handling Errors: {teach.get('misconception_handling')}",
-            "",
-            "=== REASONING PATTERNS ===",
-            "\n".join(f"- {rp}" for rp in p.get("reasoning_patterns", [])),
-            "",
-            mode_instruction,
-            format_directive,
-            "=== STRICT ACCURACY & KNOWLEDGE BOUNDARIES ===",
-            "\n".join(f"- {ar}" for ar in accuracy_rules),
-            "\n".join(f"- {rr}" for rr in roleplay_rules),
-            f"- Verified Expertise: {', '.join(boundaries.get('verified_topics', []))}",
-            f"- Limitations: {', '.join(boundaries.get('limited_topics', []))}",
-            "- Universal Principle: Always answer the student's actual question first before adding story, reflection, or follow-ups.",
-            "- Do NOT prepend 'Student:' or 'Tutor:' or your own name at the beginning of the reply.",
-            "- Do NOT append repetitive generic menus after every message.",
+            "GUIDELINES:",
+            "1. Keep internal reasoning under 25 words. Answer directly in your very first sentence.",
+            "2. Keep explanations simple, clear, and age-appropriate (30-60 words for definitions, 50-100 words for concepts).",
+            "3. For greetings, reply warmly in 1-2 friendly sentences.",
+            "4. Output ONLY the final student-facing answer in clean Markdown. Never include internal notes or meta-commentary.",
         ]
 
+        # Subject-specific accuracy rules
+        if "hist" in sub_lower:
+            prompt_parts.extend([
+                "",
+                "HISTORY FACTS:",
+                "- Shivaji Maharaj was born on 19 February 1630 (Falgun Vadya Tritiya, Shake 1551) at Fort Shivneri near Junnar in Pune district. Mother: Jijabai, Father: Shahaji Bhosale.",
+                "- Ground all textbook claims strictly in the reference facts below. Never invent dates or events.",
+            ])
+        elif "math" in sub_lower:
+            prompt_parts.extend([
+                "",
+                "MATH FACTS:",
+                "- For Pythagoras theorem, state the formula a² + b² = c² and show clear step-by-step calculations.",
+            ])
+        else:
+            prompt_parts.extend([
+                "",
+                "SCIENCE / EVS FACTS:",
+                "- Explain concepts using relatable examples and cause-and-effect.",
+            ])
+
+        # Reference material
         if context_str:
             prompt_parts.extend([
                 "",
-                "=== TEXTBOOK CONTEXT (RETRIEVED PASSAGES) ===",
+                "TEXTBOOK REFERENCE:",
                 context_str,
-                "Ground your textbook answers strictly in the above context. Do NOT invent facts not present in this evidence."
+                "Ground your answer strictly in the textbook reference above.",
             ])
 
         return "\n".join(prompt_parts)

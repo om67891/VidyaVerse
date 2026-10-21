@@ -40,11 +40,11 @@ class Settings(BaseSettings):
 
     # ── Ollama / LLM ───────────────────────────────────────────────────────
     ollama_base_url: str = "http://localhost:11434"
-    ollama_model: str = "qwen3:4b"     # Upgraded from 1.7b — ~2.5 GB Q4 quantized
+    ollama_model: str = "qwen3:1.7b"     # High-speed responsive model (4.9s on CPU)
     ollama_timeout: int = 180  # seconds (4b is slower; conservative for 8 GB RAM)
 
     # ── RAG parameters ─────────────────────────────────────────────────────
-    rag_top_k: int = 5
+    rag_top_k: int = 3
     rag_similarity_threshold: float = 1.5   # ChromaDB uses L2 distance; lower = more similar
     rag_max_context_chars: int = 4000
 
