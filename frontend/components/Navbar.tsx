@@ -2,7 +2,7 @@
 
 import Link from "next/navigation";
 import { useEffect, useState } from "react";
-import { BookOpen, Sparkles, GraduationCap, Compass, ShieldCheck } from "lucide-react";
+import { BookOpen, Sparkles, GraduationCap, Compass, ShieldCheck, UploadCloud } from "lucide-react";
 import { api } from "@/lib/api";
 
 export default function Navbar() {
@@ -64,6 +64,13 @@ export default function Navbar() {
             className="px-3 py-1.5 rounded-lg text-sm font-semibold text-emerald-800 hover:bg-emerald-50 transition-colors flex items-center gap-1.5"
           >
             <span>🏺</span> Environmental Studies
+          </a>
+          <a
+            href="/faculty/upload"
+            className="px-3 py-1.5 rounded-lg text-sm font-semibold text-indigo-700 bg-indigo-50/80 hover:bg-indigo-100 border border-indigo-200/80 transition-colors flex items-center gap-1.5 ml-1"
+          >
+            <UploadCloud size={15} />
+            Faculty Upload
           </a>
         </nav>
 

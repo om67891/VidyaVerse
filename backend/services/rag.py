@@ -46,6 +46,7 @@ def retrieve_passages(
     chapter_id: str,
     query: str,
     top_k: Optional[int] = None,
+    subject_id: Optional[str] = None,
 ) -> list[dict]:
     """
     Retrieve the top-k most relevant chunks for the given query,
@@ -54,6 +55,44 @@ def retrieve_passages(
     Returns list of dicts: {text, chapter_name, source, page_number, distance}
     """
     top_k = top_k or settings.rag_top_k
+    clean = (chapter_id or "").strip().lower()
+
+    # Determine subject
+    sub = (subject_id or "").strip().lower()
+    if not sub:
+        if clean.startswith("hist"):
+            sub = "history"
+        elif clean.startswith("math"):
+            sub = "mathematics"
+        else:
+            sub = "evs"
+
+    is_upload = clean.startswith("upload_")
+    if is_upload or sub in ("history", "mathematics"):
+        try:
+            from backend.services.retrieval_service import get_retrieval_service
+            rs = get_retrieval_service()
+            res = rs.retrieve(
+                subject_id=sub,
+                query=query,
+                chat_scope="chapter",
+                chapter_id=chapter_id,
+                top_k=top_k,
+            )
+            if res.status == "ok" and res.evidences:
+                return [
+                    {
+                        "text": ev.content,
+                        "chapter_name": ev.chapter_title,
+                        "source": ev.source_document,
+                        "page_number": ev.book_page if ev.book_page > 0 else ev.pdf_page,
+                        "distance": ev.distance,
+                    }
+                    for ev in res.evidences
+                ]
+        except Exception as e:
+            print(f"RetrievalService fallback warning: {e}")
+
     collection = get_chroma_collection()
 
     if collection.count() == 0:
@@ -214,6 +253,22 @@ _HYBRID_COMPARISON_PATTERNS = re.compile(
     r"connection between|in real life|today's world|modern day|applied to|in everyday life)\b",
     re.IGNORECASE,
 )
+
+_PERSONA_BIO_PATTERNS = re.compile(
+    r"\b("
+    r"your\s+(family|father|mother|parents|wife|wives|children|sons?|daughters?|brother|ancestors?|childhood|birthplace|fort|birth)|"
+    r"tell\s+me\s+about\s+(yourself|your\s+family|your\s+parents|your\s+life|your\s+childhood)|"
+    r"who\s+(are\s+you|were\s+your\s+parents|is\s+your\s+father|is\s+your\s+mother|was\s+your\s+father|was\s+your\s+mother)|"
+    r"what\s+is\s+your\s+father'?s?\s+name|what\s+is\s+your\s+mother'?s?\s+name|"
+    r"family\s+with\s+names"
+    r")\b",
+    re.IGNORECASE,
+)
+
+
+def is_persona_autobiographical_query(message: str) -> bool:
+    """Check if query asks about persona's identity, family, background, or childhood."""
+    return bool(_PERSONA_BIO_PATTERNS.search(message.strip()))
 
 _FOLLOWUP_FORMAT_BULLETS = re.compile(
     r"\b(bullet\s*points?|in\s*points?|at\s*least\s*\d+|give\s*me\s*\d+\s*points?|\d+\s*points)\b",
@@ -729,10 +784,33 @@ def build_chat_messages(
                 response_mode=res_mode,
                 question_format=question_format,
             )
+            # Include 1 exemplar if this is the start of the chat (empty history) to ground voice & tone
+            exemplar_messages = []
+            if not history_messages:
+                ex_list = pm.examples.get(persona_id, [])
+                if ex_list:
+                    exemplar_messages = [
+                        {"role": "user", "content": ex_list[0]["user_prompt"]},
+                        {"role": "assistant", "content": ex_list[0]["example_response"]},
+                    ]
+            # Anchor generation to eliminate Ollama Qwen3 thinking latency and keep persona strictly in character
+            p_display = persona.get("display_name", persona_id)
+            if is_persona_autobiographical_query(query):
+                if persona_id == "shivaji_maharaj" and re.search(r"\b(family|father|mother|parents|wives|sons?)\b", query, re.IGNORECASE):
+                    anchor = f"Greetings! I am {p_display}. Regarding my family, my father is "
+                else:
+                    anchor = f"Greetings! I am {p_display}. "
+            elif not history_messages:
+                anchor = f"Greetings! I am {p_display}. "
+            else:
+                anchor = f"As {p_display}, "
+
             return [
                 {"role": "system", "content": system_content},
+                *exemplar_messages,
                 *history_messages,
                 {"role": "user", "content": query},
+                {"role": "assistant", "content": anchor},
             ]
 
     # --- Mode: general_chat ---
@@ -935,6 +1013,9 @@ def _clean_output_text(text: str) -> str:
     """Strip dialog artifacts, prompt leakage, and accidental catchphrases while preserving Markdown formatting."""
     clean = _remove_thinking_tags(text)
 
+    # Cut off accidental internal scratchpad trail-offs
+    clean = re.sub(r"\n\n(Wait|Note|Okay|Let me|In summary).*", "", clean, flags=re.DOTALL | re.IGNORECASE).strip()
+
     # Remove accidental leading role labels
     clean = re.sub(r"^(Student|Tutor|Assistant|User):\s*", "", clean, flags=re.IGNORECASE).strip()
 
@@ -964,35 +1045,61 @@ def generate_with_ollama_chat(messages: list[dict], temperature: float = 0.25) -
     """
     Send structured chat messages to Ollama's /api/chat endpoint.
     Strips chain-of-thought thinking blocks and dialog artifacts.
-    Gracefully falls back to qwen3:1.7b if the configured primary model is not yet available in Ollama.
+    Enforces num_thread, lean num_ctx, num_predict, and assistant prefill anchor for high-speed local inference.
     """
     url = f"{settings.ollama_base_url}/api/chat"
     models_to_try = [settings.ollama_model]
-    if settings.ollama_model != "qwen3:1.7b":
-        models_to_try.append("qwen3:1.7b")
+    if "qwen3:4b" not in models_to_try:
+        models_to_try.append("qwen3:4b")
+    if "qwen3:0.6b" not in models_to_try:
+        models_to_try.append("qwen3:0.6b")
+
+    # If the last message is an assistant prefill anchor, extract it to prepend to generation
+    prefix_anchor = ""
+    effective_messages = list(messages)
+    if effective_messages and effective_messages[-1].get("role") == "assistant":
+        prefix_anchor = effective_messages[-1].get("content", "")
 
     last_error = None
     for model_name in models_to_try:
         payload = {
             "model": model_name,
-            "messages": messages,
+            "messages": effective_messages,
             "stream": False,
             "options": {
                 "temperature": temperature,
-                "num_predict": 600,
+                "num_predict": 450,
+                "num_thread": 6,
+                "num_ctx": 2048,
+                "stop": [
+                    "\n\nWait",
+                    "\n\nNote",
+                    "\n\nOkay",
+                    "\n\nLet me",
+                    "\n\nIn summary",
+                    "<|im_end|>",
+                    "<|im_start|>",
+                ],
             },
-            "think": False,
         }
 
         try:
             resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)
             if resp.status_code == 404 and model_name != models_to_try[-1]:
-                # Primary model not found (e.g. downloading), try fallback
+                # Model not found, try next candidate
                 continue
             resp.raise_for_status()
             data = resp.json()
             raw = data.get("message", {}).get("content", "").strip()
-            return _clean_output_text(raw)
+            # Clean any internal reasoning tokens if leaked into content
+            if raw:
+                raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+            if prefix_anchor and raw:
+                raw = prefix_anchor + raw
+            elif prefix_anchor and not raw:
+                raw = prefix_anchor
+            if raw:
+                return _clean_output_text(raw)
         except requests.exceptions.ConnectionError:
             raise RuntimeError(
                 f"Cannot connect to Ollama at {settings.ollama_base_url}. "
@@ -1084,6 +1191,11 @@ def process_chat(request: ChatRequest) -> ChatResponse:
         passages = []
         effective_query = request.message
         flags = {}
+    elif request.persona_id and is_persona_autobiographical_query(request.message):
+        mode = "chapter_question"
+        passages = []
+        effective_query = request.message
+        flags = {"is_persona_inquiry": True}
     else:
         mode, passages, effective_query, flags = route_intent(
             message=request.message,

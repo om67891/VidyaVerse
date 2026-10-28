@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     project_root: Path = PROJECT_ROOT
     vectorstore_path: Path = PROJECT_ROOT / "vectorstore" / "class5_chatbot"
     subjects_base_path: Path = PROJECT_ROOT
+    upload_dir: Path = PROJECT_ROOT / "data" / "uploads"
+
+    # ── Upload Limits ──────────────────────────────────────────────────────
+    max_upload_size_bytes: int = 50 * 1024 * 1024  # 50 MB default max upload
 
     # ── ChromaDB ───────────────────────────────────────────────────────────
     chroma_collection_name: str = "class5_evs_chapters"
@@ -31,6 +35,7 @@ class Settings(BaseSettings):
     history_pdf_path: Path = PROJECT_ROOT / "History" / "History.pdf"
     math_collection_name: str = "mathematics_master"
     math_pdf_path: Path = PROJECT_ROOT / "Maths" / "Mathematics.pdf"
+    faculty_collection_name: str = "faculty_uploads"
 
     # ── Database ───────────────────────────────────────────────────────────
     database_path: Path = PROJECT_ROOT / "data" / "vidyaverse.db"

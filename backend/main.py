@@ -6,7 +6,15 @@ Start with:
 """
 from __future__ import annotations
 
-from fastapi import FastAPI, HTTPException
+import sys
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
+import hashlib
+import uuid
+from fastapi import FastAPI, HTTPException, Form, File, UploadFile, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
 from typing import Optional
@@ -26,8 +34,13 @@ from backend.schemas import (
     SendMessageRequest,
     QuizValidateRequest,
     MathValidateRequest,
+    UploadedResourceSchema,
+    FacultyUploadResponse,
+    FacultyReindexResponse,
 )
 from backend.repositories.conversation_repository import get_conversation_repository
+from backend.repositories.uploaded_resource_repository import get_uploaded_resource_repository
+from backend.services.faculty_ingestion_service import get_faculty_ingestion_service
 from backend.services.tutoring_service import get_tutoring_service, TutoringMessageRequest
 from backend.services.learning_map_service import get_learning_map_service
 from backend.services.glossary_service import get_glossary_service
@@ -213,6 +226,201 @@ async def index_status():
         indexed_chapters=sorted(indexed_ids),
         status="ready" if total > 0 else "empty",
     )
+
+
+# ── Faculty PDF Upload & Resource Management ──────────────────────────────────
+
+
+@app.post("/api/faculty/upload", response_model=FacultyUploadResponse)
+async def upload_faculty_pdf(
+    background_tasks: BackgroundTasks,
+    subject_id: str = Form(...),
+    class_number: int = Form(...),
+    chapter_number: int = Form(...),
+    chapter_name: str = Form(...),
+    file: UploadFile = File(...),
+    background: bool = Form(True),
+):
+    """
+    Upload and index a faculty PDF textbook, notes, or learning material.
+    Validates file format, saves safely to local storage, and runs local E5 embedding pipeline.
+    """
+    svc = get_faculty_ingestion_service()
+    repo = get_uploaded_resource_repository()
+
+    # Read binary content safely
+    try:
+        content = await file.read()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to read uploaded file: {e}")
+
+    # Validate
+    is_valid, err_msg = svc.validate_upload_request(
+        subject_id=subject_id,
+        class_number=class_number,
+        chapter_number=chapter_number,
+        chapter_name=chapter_name,
+        filename=file.filename or "document.pdf",
+        file_bytes=content,
+    )
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=err_msg)
+
+    # Generate canonical resource_id and chapter_id
+    res_id = f"res_{uuid.uuid4().hex[:12]}"
+    chap_id = svc.generate_canonical_chapter_id(
+        subject_id=subject_id,
+        class_number=class_number,
+        chapter_number=chapter_number,
+    )
+
+    # Save to disk safely
+    try:
+        stored_path = svc.save_pdf_to_disk(
+            resource_id=res_id,
+            subject_id=subject_id,
+            class_number=class_number,
+            chapter_number=chapter_number,
+            chapter_name=chapter_name,
+            original_filename=file.filename or "document.pdf",
+            file_bytes=content,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save PDF to disk: {e}")
+
+    # Calculate sha256
+    file_hash = hashlib.sha256(content).hexdigest()
+
+    # Create SQLite record with status 'uploaded'
+    resource = repo.create_resource(
+        resource_id=res_id,
+        subject_id=subject_id,
+        class_number=class_number,
+        chapter_id=chap_id,
+        chapter_number=chapter_number,
+        chapter_name=chapter_name,
+        original_filename=file.filename or "document.pdf",
+        stored_path=str(stored_path),
+        file_hash=file_hash,
+        file_size_bytes=len(content),
+        processing_status="uploaded",
+    )
+
+    if background:
+        # Ingest in background task
+        background_tasks.add_task(
+            svc.ingest_pdf,
+            resource_id=res_id,
+            pdf_path=stored_path,
+            subject_id=subject_id,
+            class_number=class_number,
+            chapter_id=chap_id,
+            chapter_number=chapter_number,
+            chapter_name=chapter_name,
+            original_filename=file.filename or "document.pdf",
+        )
+        return FacultyUploadResponse(
+            status="processing",
+            message="PDF uploaded successfully. Processing text extraction and generating embeddings...",
+            resource=UploadedResourceSchema(**resource),
+        )
+    else:
+        # Synchronous ingestion
+        try:
+            svc.ingest_pdf(
+                resource_id=res_id,
+                pdf_path=stored_path,
+                subject_id=subject_id,
+                class_number=class_number,
+                chapter_id=chap_id,
+                chapter_number=chapter_number,
+                chapter_name=chapter_name,
+                original_filename=file.filename or "document.pdf",
+            )
+            updated = repo.get_resource(res_id)
+            return FacultyUploadResponse(
+                status="indexed",
+                message="PDF uploaded and indexed successfully into local vector store.",
+                resource=UploadedResourceSchema(**(updated or resource)),
+            )
+        except Exception as e:
+            updated = repo.get_resource(res_id)
+            return FacultyUploadResponse(
+                status="failed",
+                message=f"Ingestion failed: {e}",
+                resource=UploadedResourceSchema(**(updated or resource)),
+            )
+
+
+@app.get("/api/faculty/uploads/{resource_id}", response_model=UploadedResourceSchema)
+async def get_uploaded_resource_status(resource_id: str):
+    """Retrieve indexing status and metadata of an uploaded resource."""
+    repo = get_uploaded_resource_repository()
+    res = repo.get_resource(resource_id)
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Uploaded resource '{resource_id}' not found.")
+    return UploadedResourceSchema(**res)
+
+
+@app.get("/api/faculty/uploads", response_model=list[UploadedResourceSchema])
+async def list_uploaded_resources(
+    subject_id: Optional[str] = None,
+    class_number: Optional[int] = None,
+    status: Optional[str] = None,
+):
+    """List all faculty uploaded resources with optional filtering."""
+    repo = get_uploaded_resource_repository()
+    resources = repo.list_resources(
+        subject_id=subject_id,
+        class_number=class_number,
+        status=status,
+    )
+    return [UploadedResourceSchema(**r) for r in resources]
+
+
+@app.delete("/api/faculty/uploads/{resource_id}")
+async def delete_uploaded_resource(resource_id: str):
+    """Delete an uploaded PDF, its ChromaDB vectors, and metadata."""
+    svc = get_faculty_ingestion_service()
+    deleted = svc.delete_resource_and_vectors(resource_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail=f"Uploaded resource '{resource_id}' not found.")
+    return {"status": "deleted", "resource_id": resource_id}
+
+
+@app.post("/api/faculty/uploads/{resource_id}/reindex", response_model=FacultyReindexResponse)
+async def reindex_uploaded_resource(resource_id: str):
+    """Re-index an existing uploaded PDF safely without duplicate vectors."""
+    repo = get_uploaded_resource_repository()
+    svc = get_faculty_ingestion_service()
+
+    res = repo.get_resource(resource_id)
+    if not res:
+        raise HTTPException(status_code=404, detail=f"Uploaded resource '{resource_id}' not found.")
+
+    p = Path(res["stored_path"])
+    if not p.exists():
+        raise HTTPException(status_code=400, detail="Stored PDF file no longer exists on disk.")
+
+    try:
+        result = svc.ingest_pdf(
+            resource_id=res["resource_id"],
+            pdf_path=p,
+            subject_id=res["subject_id"],
+            class_number=res["class_number"],
+            chapter_id=res["chapter_id"],
+            chapter_number=res["chapter_number"],
+            chapter_name=res["chapter_name"],
+            original_filename=res["original_filename"],
+        )
+        return FacultyReindexResponse(
+            status="indexed",
+            message="Resource reindexed successfully.",
+            resource_id=resource_id,
+            chunk_count=result.get("chunks", 0),
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Reindexing failed: {e}")
 
 
 # ── History Prototype Endpoints ───────────────────────────────────────────────

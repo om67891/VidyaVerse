@@ -35,11 +35,36 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 """
 
+DDL_UPLOADED_RESOURCES = """
+CREATE TABLE IF NOT EXISTS uploaded_resources (
+    resource_id TEXT PRIMARY KEY,
+    subject_id TEXT NOT NULL,
+    class_number INTEGER NOT NULL,
+    chapter_id TEXT NOT NULL UNIQUE,
+    chapter_number INTEGER NOT NULL,
+    chapter_name TEXT NOT NULL,
+    source_type TEXT NOT NULL DEFAULT 'faculty_upload',
+    original_filename TEXT NOT NULL,
+    stored_path TEXT NOT NULL,
+    file_hash TEXT NOT NULL,
+    file_size_bytes INTEGER NOT NULL DEFAULT 0,
+    processing_status TEXT NOT NULL CHECK(processing_status IN ('uploaded', 'processing', 'indexed', 'failed')),
+    chunk_count INTEGER NOT NULL DEFAULT 0,
+    error_message TEXT,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    indexed_at TIMESTAMP
+);
+"""
+
 DDL_INDEXES = [
     "CREATE INDEX IF NOT EXISTS idx_conv_subject_scope ON conversations(subject_id, chat_scope, updated_at DESC);",
     "CREATE INDEX IF NOT EXISTS idx_conv_chapter ON conversations(chapter_id, updated_at DESC);",
     "CREATE INDEX IF NOT EXISTS idx_conv_updated ON conversations(updated_at DESC);",
     "CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conversation_id, created_at ASC);",
+    "CREATE INDEX IF NOT EXISTS idx_uploaded_subject_class ON uploaded_resources(subject_id, class_number, processing_status);",
+    "CREATE INDEX IF NOT EXISTS idx_uploaded_chapter ON uploaded_resources(chapter_id);",
+    "CREATE INDEX IF NOT EXISTS idx_uploaded_status ON uploaded_resources(processing_status);",
 ]
 
 
@@ -48,5 +73,6 @@ def init_schema(conn: sqlite3.Connection) -> None:
     with conn:
         conn.execute(DDL_CONVERSATIONS)
         conn.execute(DDL_MESSAGES)
+        conn.execute(DDL_UPLOADED_RESOURCES)
         for idx in DDL_INDEXES:
             conn.execute(idx)

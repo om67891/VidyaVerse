@@ -592,20 +592,39 @@ function ChatContent() {
                   Ch. {chapter.chapter_number}
                 </span>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                  <h1
-                    style={{
-                      fontSize: "0.92rem",
-                      fontWeight: 700,
-                      color: "var(--text-primary)",
-                      margin: 0,
-                      maxWidth: "360px",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {chapter.title}
-                  </h1>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                    <h1
+                      style={{
+                        fontSize: "0.92rem",
+                        fontWeight: 700,
+                        color: "var(--text-primary)",
+                        margin: 0,
+                        maxWidth: "340px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {chapter.title}
+                    </h1>
+                    {chapter.validation_status === "faculty_upload" && (
+                      <span
+                        style={{
+                          background: "#EEF2FF",
+                          border: "1px solid #C7D2FE",
+                          color: "#4338CA",
+                          borderRadius: "4px",
+                          padding: "0.1rem 0.35rem",
+                          fontSize: "0.62rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.02em",
+                        }}
+                      >
+                        Faculty Material
+                      </span>
+                    )}
+                  </div>
                   {selectedPersona && (
                     <span style={{ fontSize: "0.68rem", color: "var(--accent)", fontWeight: 600 }}>
                       Guide: {selectedPersona.name} (Locked)

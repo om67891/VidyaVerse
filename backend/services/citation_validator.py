@@ -107,12 +107,14 @@ class CitationValidator:
 
             # Scope check
             if chat_scope == "chapter" and current_chapter_id:
-                # Normalize comparison
-                cur_num = self._extract_num(current_chapter_id)
-                ev_num = self._extract_num(ev.chapter_id)
-                if cur_num is not None and ev_num is not None and cur_num != ev_num:
-                    # Reject out-of-chapter evidence
-                    continue
+                if ev.chapter_id.lower() == current_chapter_id.lower():
+                    pass
+                else:
+                    cur_num = self._extract_num(current_chapter_id)
+                    ev_num = self._extract_num(ev.chapter_id)
+                    if cur_num is not None and ev_num is not None and cur_num != ev_num:
+                        # Reject out-of-chapter evidence
+                        continue
 
             # Format human-readable display label
             label = self._build_display_label(ev)
@@ -184,7 +186,9 @@ class CitationValidator:
         return int(m.group(1)) if m else None
 
     def _build_display_label(self, ev: RetrievalEvidence) -> str:
-        if ev.subject_id == "history":
+        if ev.verification_status == "faculty_upload" or ev.chapter_id.lower().startswith("upload_"):
+            return f"[Faculty Material] {ev.chapter_title}, p. {ev.pdf_page} ({ev.source_document})"
+        elif ev.subject_id == "history":
             return f"Shivachhatrapati (Std IV), Lesson {ev.chapter_number}: '{ev.chapter_title}', p. {ev.book_page}"
         elif ev.subject_id == "mathematics":
             return f"Mathematics Part II (Std X), Ch. {ev.chapter_number}: '{ev.chapter_title}', p. {ev.book_page}"

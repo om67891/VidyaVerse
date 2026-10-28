@@ -81,10 +81,10 @@ def extract_pages(pdf_path: Path) -> list[dict]:
             if len(cleaned) >= 20:   # skip near-empty/scanned pages
                 pages.append({"page": page_num, "text": cleaned})
             else:
-                print(f"  ⚠  Page {page_num}: little text extracted (possibly scanned)")
+                print(f"  [WARN]  Page {page_num}: little text extracted (possibly scanned)")
         doc.close()
     except Exception as e:
-        print(f"  ✗  Failed to open {pdf_path.name}: {e}")
+        print(f"  [ERROR]  Failed to open {pdf_path.name}: {e}")
     return pages
 
 
@@ -99,9 +99,9 @@ def get_embedding_model():
     global _embedding_model
     if _embedding_model is None:
         from sentence_transformers import SentenceTransformer
-        print(f"Loading embedding model: {settings.embedding_model_name} …")
+        print(f"Loading embedding model: {settings.embedding_model_name}...")
         _embedding_model = SentenceTransformer(settings.embedding_model_name)
-        print("  ✓  Embedding model loaded.")
+        print("  [OK]  Embedding model loaded.")
     return _embedding_model
 
 

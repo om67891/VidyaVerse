@@ -149,3 +149,38 @@ class MathValidateRequest(BaseModel):
     params: dict = Field(default_factory=dict)
 
 
+# ── Faculty PDF Upload & Resource Schemas ─────────────────────────────────────
+
+
+class UploadedResourceSchema(BaseModel):
+    resource_id: str
+    subject_id: str
+    class_number: int
+    chapter_id: str
+    chapter_number: int
+    chapter_name: str
+    source_type: str = "faculty_upload"
+    original_filename: str
+    file_size_bytes: int
+    processing_status: str  # "uploaded" | "processing" | "indexed" | "failed"
+    chunk_count: int = 0
+    error_message: Optional[str] = None
+    created_at: str
+    updated_at: str
+    indexed_at: Optional[str] = None
+
+
+class FacultyUploadResponse(BaseModel):
+    status: str  # "uploaded" | "processing" | "indexed" | "failed"
+    message: str
+    resource: UploadedResourceSchema
+
+
+class FacultyReindexResponse(BaseModel):
+    status: str
+    message: str
+    resource_id: str
+    chunk_count: int
+
+
+

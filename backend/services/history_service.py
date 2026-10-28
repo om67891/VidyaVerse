@@ -187,33 +187,66 @@ def get_persona_info(lesson: LessonNode) -> tuple[str, str, str, str]:
 def _clean_output_text(text: str) -> str:
     """Clean model generation artifacts, think tags, and accidental labels."""
     clean = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    clean = re.sub(r"\n\n(Wait|Note|Okay|Let me|In summary).*", "", clean, flags=re.DOTALL | re.IGNORECASE).strip()
     clean = re.sub(r"^(Student|Tutor|Shivaji|Assistant|User):\s*", "", clean, flags=re.IGNORECASE).strip()
     clean = re.sub(r"\n*(Would you like to (practice|learn|ask) [^?\n]+\?)\s*$", "", clean, flags=re.IGNORECASE).strip()
     return clean
 
 
 def call_llm(messages: list[dict], temperature: float = 0.3, max_tokens: int = 500) -> str:
-    """Send chat messages to local Ollama qwen3:1.7b."""
+    """Send chat messages to local Ollama with prefix anchor support."""
     url = f"{settings.ollama_base_url}/api/chat"
-    payload = {
-        "model": settings.ollama_model,
-        "messages": messages,
-        "stream": False,
-        "options": {
-            "temperature": temperature,
-            "num_predict": max_tokens,
-        },
-        "think": False,
-    }
-    try:
-        resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)
-        resp.raise_for_status()
-        data = resp.json()
-        raw = data.get("message", {}).get("content", "").strip()
-        return _clean_output_text(raw)
-    except Exception as e:
-        print(f"Ollama call warning: {e}")
-        return ""
+    models_to_try = [settings.ollama_model]
+    if "qwen3:4b" not in models_to_try:
+        models_to_try.append("qwen3:4b")
+    if "qwen3:0.6b" not in models_to_try:
+        models_to_try.append("qwen3:0.6b")
+
+    prefix_anchor = ""
+    effective_messages = list(messages)
+    if effective_messages and effective_messages[-1].get("role") == "assistant":
+        prefix_anchor = effective_messages[-1].get("content", "")
+
+    for m in models_to_try:
+        payload = {
+            "model": m,
+            "messages": effective_messages,
+            "stream": False,
+            "options": {
+                "temperature": temperature,
+                "num_predict": max_tokens,
+                "num_thread": 6,
+                "num_ctx": 2048,
+                "stop": [
+                    "\n\nWait",
+                    "\n\nNote",
+                    "\n\nOkay",
+                    "\n\nLet me",
+                    "\n\nIn summary",
+                    "<|im_end|>",
+                    "<|im_start|>",
+                ],
+            },
+        }
+        try:
+            resp = requests.post(url, json=payload, timeout=settings.ollama_timeout)
+            if resp.status_code == 404:
+                continue
+            resp.raise_for_status()
+            data = resp.json()
+            raw = data.get("message", {}).get("content", "").strip()
+            if raw:
+                raw = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+            if prefix_anchor and raw:
+                raw = prefix_anchor + raw
+            elif prefix_anchor and not raw:
+                raw = prefix_anchor
+            if raw:
+                return _clean_output_text(raw)
+        except Exception as e:
+            print(f"Ollama call ({m}) warning: {e}")
+            continue
+    return ""
 
 
 # ── Textbook Retrieval ────────────────────────────────────────────────────────

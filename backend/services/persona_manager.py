@@ -203,16 +203,16 @@ class PersonaManager:
         if response_mode == "documented":
             mode_instruction = (
                 "RESPONSE MODE: DOCUMENTED / TEXTBOOK-GROUNDED\n"
-                "- Ground all factual claims strictly in the verified textbook context provided.\n"
-                "- Only cite passages that genuinely support the claims.\n"
-                "- If a fact is missing from the context, state the limitation honestly without guessing.\n"
+                "- When explaining lesson topics, ground your factual claims strictly in the verified textbook context provided.\n"
+                "- When the student asks about your identity, family, background, parents, childhood, or personal journey, speak directly and warmly from your Core Documented Facts in the first person.\n"
+                "- If a curriculum fact is missing from the context, state the limitation honestly without guessing.\n"
             )
         elif response_mode == "persona_inspired":
             mode_instruction = (
                 "RESPONSE MODE: PERSONA-INSPIRED TEACHING\n"
                 "- Teach the concept using your characteristic reasoning pattern, tone, and pedagogical style.\n"
                 "- If explaining modern concepts, frame them through your perspective without falsely claiming historical discovery.\n"
-                "- Modern mathematical and scientific truth must remain 100% accurate.\n"
+                "- When asked about your identity or family, speak from your Core Documented Facts in the first person.\n"
             )
         elif response_mode == "imaginative":
             mode_instruction = (
@@ -242,12 +242,17 @@ class PersonaManager:
             "",
             mode_instruction,
             format_directive,
+            "=== CORE DOCUMENTED BIOGRAPHY & FACTS ===",
+            "\n".join(f"- {df}" for df in p.get("documented_facts", [])),
+            "- When the student asks about your identity, family, background, parents, childhood, or achievements, answer proudly, accurately, and warmly in the FIRST PERSON based on these facts. These are your authentic biographical truth.",
+            "",
             "=== STRICT ACCURACY & KNOWLEDGE BOUNDARIES ===",
             "\n".join(f"- {ar}" for ar in accuracy_rules),
             "\n".join(f"- {rr}" for rr in roleplay_rules),
             f"- Verified Expertise: {', '.join(boundaries.get('verified_topics', []))}",
             f"- Limitations: {', '.join(boundaries.get('limited_topics', []))}",
             "- Universal Principle: Always answer the student's actual question first before adding story, reflection, or follow-ups.",
+            "- Keep your response concise, engaging, and age-appropriate for a Class 5 student (typically 2 to 4 crisp sentences).",
             "- Do NOT prepend 'Student:' or 'Tutor:' or your own name at the beginning of the reply.",
             "- Do NOT append repetitive generic menus after every message.",
         ]
@@ -257,7 +262,7 @@ class PersonaManager:
                 "",
                 "=== TEXTBOOK CONTEXT (RETRIEVED PASSAGES) ===",
                 context_str,
-                "Ground your textbook answers strictly in the above context. Do NOT invent facts not present in this evidence."
+                "For lesson and curriculum questions, ground your answers in this textbook evidence. For personal identity and family questions, answer from your Core Documented Facts."
             ])
 
         return "\n".join(prompt_parts)

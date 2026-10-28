@@ -291,21 +291,36 @@ function SubjectDashboardContent() {
                             </>
                           )}
                           <span>•</span>
-                          <span className="text-emerald-700 font-semibold flex items-center gap-0.5">
-                            <CheckCircle2 size={11} /> AI-Ready
-                          </span>
+                          {ch.validation_status === "faculty_upload" ? (
+                            <span className="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 font-bold border border-indigo-200 text-[10px]">
+                              Faculty Upload
+                            </span>
+                          ) : (
+                            <span className="text-emerald-700 font-semibold flex items-center gap-0.5">
+                              <CheckCircle2 size={11} /> AI-Ready
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
 
                     {/* Quick Actions */}
                     <div className="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
-                      <a
-                        href={chapterOverviewUrl}
-                        className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
-                      >
-                        Overview
-                      </a>
+                      {ch.validation_status === "faculty_upload" ? (
+                        <button
+                          onClick={() => handleStartChapterChat(ch)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                        >
+                          Notes
+                        </button>
+                      ) : (
+                        <a
+                          href={chapterOverviewUrl}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+                        >
+                          Overview
+                        </a>
+                      )}
                       <button
                         onClick={() => handleStartChapterChat(ch)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1 transition-all ${themeClasses.btnPrimary}`}

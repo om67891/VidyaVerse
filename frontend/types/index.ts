@@ -236,3 +236,37 @@ export interface LessonNode {
   next_lesson_id?: string | null;
 }
 
+// ── Faculty Upload Types ──────────────────────────────────────────────────────
+
+export interface UploadedResource {
+  resource_id: string;
+  subject_id: string;
+  class_number: number;
+  chapter_id: string;
+  chapter_number: number;
+  chapter_name: string;
+  source_type: string;
+  original_filename: string;
+  file_size_bytes: number;
+  processing_status: "uploaded" | "processing" | "indexed" | "failed";
+  chunk_count: number;
+  error_message?: string | null;
+  created_at: string;
+  updated_at: string;
+  indexed_at?: string | null;
+}
+
+export interface FacultyUploadResponse {
+  status: "uploaded" | "processing" | "indexed" | "failed";
+  message: string;
+  resource: UploadedResource;
+}
+
+export interface FacultyReindexResponse {
+  status: string;
+  message: string;
+  resource_id: string;
+  chunk_count: number;
+}
+
+

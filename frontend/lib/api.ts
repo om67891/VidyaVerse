@@ -14,9 +14,18 @@ const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const isFormData = init?.body instanceof FormData;
+  const headers: Record<string, string> = isFormData
+    ? {}
+    : { "Content-Type": "application/json" };
+
+  if (init?.headers) {
+    Object.assign(headers, init.headers);
+  }
+
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...init,
+    headers,
   });
   if (!res.ok) {
     let detail = `HTTP ${res.status}`;
@@ -189,6 +198,44 @@ export const api = {
     return apiFetch("/api/math/validate", {
       method: "POST",
       body: JSON.stringify(req),
+    });
+  },
+
+  // ── Faculty Upload & Ingestion ─────────────────────────────────────────────
+
+  uploadFacultyPDF(formData: FormData): Promise<import("@/types").FacultyUploadResponse> {
+    return apiFetch("/api/faculty/upload", {
+      method: "POST",
+      body: formData,
+    });
+  },
+
+  getUploadedResource(resourceId: string): Promise<import("@/types").UploadedResource> {
+    return apiFetch(`/api/faculty/uploads/${encodeURIComponent(resourceId)}`);
+  },
+
+  listUploadedResources(params?: {
+    subject_id?: string;
+    class_number?: number;
+    status?: string;
+  }): Promise<import("@/types").UploadedResource[]> {
+    const q = new URLSearchParams();
+    if (params?.subject_id) q.set("subject_id", params.subject_id);
+    if (params?.class_number !== undefined) q.set("class_number", String(params.class_number));
+    if (params?.status) q.set("status", params.status);
+    const qs = q.toString() ? `?${q.toString()}` : "";
+    return apiFetch(`/api/faculty/uploads${qs}`);
+  },
+
+  deleteUploadedResource(resourceId: string): Promise<{ status: string; resource_id: string }> {
+    return apiFetch(`/api/faculty/uploads/${encodeURIComponent(resourceId)}`, {
+      method: "DELETE",
+    });
+  },
+
+  reindexUploadedResource(resourceId: string): Promise<import("@/types").FacultyReindexResponse> {
+    return apiFetch(`/api/faculty/uploads/${encodeURIComponent(resourceId)}/reindex`, {
+      method: "POST",
     });
   },
 };
